@@ -52,6 +52,70 @@
             break-after: auto;
         }
 
+        /* ========== PAGE BREAK STYLES ========== */
+        .page-break-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+            margin: 10px 0;
+            border: 2px dashed #c62828;
+            border-radius: 4px;
+            background: #fff5f5;
+            color: #c62828;
+            font-weight: 700;
+            font-size: 10pt;
+            letter-spacing: 2px;
+            font-family: "Roboto", Arial, sans-serif;
+            text-transform: uppercase;
+            user-select: none;
+            cursor: default;
+            position: relative;
+        }
+        .page-break-indicator span {
+            padding: 0 12px;
+            white-space: nowrap;
+        }
+
+        /* ========== PAGE BREAK IN PRINT ========== */
+        .print-page-break {
+            page-break-after: always;
+            break-after: page;
+        }
+
+        /* Page break wrapper - hides indicator in print, shows break */
+        .page-break-wrapper {
+            display: block;
+        }
+        .page-break-wrapper .page-break-indicator {
+            display: flex;
+        }
+        .page-break-wrapper .page-break-spacer {
+            display: none;
+        }
+
+        @media print {
+            .page-break-wrapper .page-break-indicator {
+                display: none !important;
+            }
+            .page-break-wrapper .page-break-spacer {
+                display: block !important;
+                page-break-after: always;
+                break-after: page;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                visibility: hidden !important;
+                overflow: hidden !important;
+            }
+            .page-break-wrapper {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+
         /* ========== TOOLBAR ========== */
         .toolbar {
             position: fixed;
@@ -261,37 +325,6 @@
         .weight-controls button:hover { background: #666; }
         .weight-controls button.active-weight { background: #4caf50; }
 
-        .gap-control {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            background: #2a2a2a;
-            padding: 2px 4px;
-            border-radius: 4px;
-            border: 1px solid #444;
-        }
-        .gap-control input {
-            width: 24px;
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 3px;
-            padding: 1px 2px;
-            font-size: 9px;
-            height: 18px;
-        }
-        .gap-control button {
-            background: #444;
-            color: #fff;
-            border: none;
-            padding: 0 5px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 9px;
-            height: 18px;
-        }
-        .gap-control button:hover { background: #666; }
-
         /* ========== GAP SLIDER STYLES ========== */
         .ctrl-group input[type="radio"] {
             -webkit-appearance: none;
@@ -447,16 +480,13 @@
 
         /* ========== I/O TABLE CUSTOM STYLES ========== */
         .io-table .input-cell {
-            
             font-weight: 500 !important;
-           
             line-height: 1.0 !important;
             padding: 2px 6px !important;
             white-space: pre-wrap !important;
         }
 
         .io-table .output-cell {
-            
             font-weight: 500 !important;
             line-height: 1.0 !important;
             padding: 2px 6px !important;
@@ -687,8 +717,6 @@
                 border: 0.5px solid #222 !important;
             }
             
-          
-            
             /* Remove I/O backgrounds in print */
             .io-table .input-cell {
                 background: transparent !important;
@@ -719,6 +747,22 @@
             .problem-statement p + p {
                 margin-top: 2px !important;
             }
+            
+            /* Page break spacer becomes visible in print */
+            .page-break-spacer {
+                display: block !important;
+                page-break-after: always;
+                break-after: page;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                visibility: hidden !important;
+                overflow: hidden !important;
+            }
+            .page-break-indicator {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -748,6 +792,7 @@
             <button class="context-btn" id="ctxFormatAlgo" onclick="formatAlgorithm()">Format Algo</button>
             <button class="context-btn" id="ctxRenderMD" onclick="renderFocusedMarkdown()">Render MD</button>
             <button class="context-btn" id="ctxUnrenderMD" onclick="unrenderFocusedMarkdown()" style="background:#c62828;">Unrender MD</button>
+            <button class="danger" onclick="insertPageBreak()" style="background:#c62828;">⛔ Page Break</button>
         </div>
         
         <!-- Row 3: Table Controls -->
@@ -1074,7 +1119,7 @@
         <!-- Content will be dynamically generated -->
     </div>
 
-    <script>
+<script>
         // ================================================================
         // SECTION 1: CONSTANTS & CONFIGURATION
         // ================================================================
@@ -1136,6 +1181,8 @@ Step 2 [Assign]: sum ← a + b + c
 Step 3 [Output]: print avg
 Step 4: Exit
 
+<page-break>
+
 ### SOURCE CODE
 \`\`\`c
 #include <stdio.h>
@@ -1173,7 +1220,7 @@ The program ran successfully, correctly calculating and printing the average of 
         const MAX_UNDO_STEPS = 50;
 
         // ================================================================
-        // SECTION 2: GLOBAL STATE VARIABLES
+        // SECTION 2: GLOBAL STATE
         // ================================================================
         let currentMarkdown = DEFAULT_MARKDOWN;
         let editMode = false;
@@ -1184,8 +1231,7 @@ The program ran successfully, correctly calculating and printing the average of 
         let undoStack = [];
         let redoStack = [];
         let isUndoRedo = false;
-        let markdownCache = {};
-        
+
         // Gap values
         let currentGapMode = 'section';
         let gapValues = {
@@ -1195,7 +1241,77 @@ The program ran successfully, correctly calculating and printing the average of 
         };
 
         // ================================================================
-        // SECTION 3: SETTINGS & STORAGE
+        // SECTION 3: PAGE BREAK – INSERT AT CURSOR
+        // ================================================================
+        function insertPageBreak() {
+            if (!editMode) {
+                alert('Please enable Edit mode first (Ctrl+E)');
+                return;
+            }
+
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const container = range.commonAncestorContainer;
+                let editableEl = null;
+                if (container.nodeType === Node.TEXT_NODE) {
+                    editableEl = container.parentElement.closest('[contenteditable="true"]');
+                } else if (container.nodeType === Node.ELEMENT_NODE) {
+                    editableEl = container.closest('[contenteditable="true"]');
+                }
+
+                if (editableEl) {
+                    const pageBreakHTML = `<div class="page-break-wrapper" contenteditable="false">
+                        <div class="page-break-indicator"><span>⛔ PAGE BREAK ⛔</span></div>
+                        <div class="page-break-spacer"></div>
+                    </div>`;
+
+                    const fragment = range.createContextualFragment(pageBreakHTML);
+                    range.insertNode(fragment);
+                    range.setStartAfter(fragment);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    saveState();
+                    const status = document.getElementById('editStatus');
+                    status.textContent = '⛔ Page break inserted!';
+                    setTimeout(() => {
+                        status.textContent = editMode ? 'Edit ON' : 'View';
+                    }, 1500);
+                    return;
+                }
+            }
+
+            // Fallback: append at the end
+            const page = document.getElementById('pageContent');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'page-break-wrapper';
+            wrapper.setAttribute('contenteditable', 'false');
+
+            const indicator = document.createElement('div');
+            indicator.className = 'page-break-indicator';
+            const span = document.createElement('span');
+            span.textContent = '⛔ PAGE BREAK ⛔';
+            indicator.appendChild(span);
+            wrapper.appendChild(indicator);
+
+            const spacer = document.createElement('div');
+            spacer.className = 'page-break-spacer';
+            wrapper.appendChild(spacer);
+
+            page.appendChild(wrapper);
+            saveState();
+
+            const status = document.getElementById('editStatus');
+            status.textContent = '⛔ Page break inserted at end!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        // ================================================================
+        // SECTION 4: SETTINGS & STORAGE
         // ================================================================
         function getSettingsObject() {
             return {
@@ -1247,19 +1363,20 @@ The program ran successfully, correctly calculating and printing the average of 
                 if (saved) {
                     const data = JSON.parse(saved);
                     console.log('📂 App data loaded from:', new Date(data.timestamp).toLocaleString());
-                    
+
                     if (data.content) {
                         document.getElementById('pageContent').innerHTML = data.content;
+                        undoStack = [data.content];
                     }
-                    
+
                     if (data.markdown) {
                         currentMarkdown = data.markdown;
                     }
-                    
+
                     if (data.settings) {
                         applySettings(data.settings);
                     }
-                    
+
                     return true;
                 }
             } catch (e) {
@@ -1348,34 +1465,26 @@ The program ran successfully, correctly calculating and printing the average of 
                     document.getElementById('wrapBody').checked = settings.wrapBody;
                     toggleBodyWrap();
                 }
-                
-                // Initialize gaps after loading settings
+
                 setTimeout(function() {
                     initGaps();
                 }, 100);
-                
+
             } catch (e) {
                 console.warn('Failed to apply settings:', e);
             }
         }
 
         // ================================================================
-        // SECTION 4: UNDO/REDO SYSTEM
+        // SECTION 5: UNDO / REDO
         // ================================================================
         function saveState() {
             if (isUndoRedo) return;
-            
             const page = document.getElementById('pageContent');
             const state = page.innerHTML;
-            
-            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === state) {
-                return;
-            }
-            
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === state) return;
             undoStack.push(state);
-            if (undoStack.length > MAX_UNDO_STEPS) {
-                undoStack.shift();
-            }
+            if (undoStack.length > MAX_UNDO_STEPS) undoStack.shift();
             redoStack = [];
             saveAppData();
         }
@@ -1385,21 +1494,17 @@ The program ran successfully, correctly calculating and printing the average of 
                 alert('Nothing to undo');
                 return;
             }
-            
             isUndoRedo = true;
             const currentState = document.getElementById('pageContent').innerHTML;
             redoStack.push(currentState);
-            
             undoStack.pop();
             const previousState = undoStack[undoStack.length - 1];
             document.getElementById('pageContent').innerHTML = previousState;
-            
             isUndoRedo = false;
             applyAllStyles();
             saveAppData();
-            
             const status = document.getElementById('editStatus');
-            status.textContent = 'Undo';
+            status.textContent = '↩️ Undo';
             setTimeout(() => {
                 status.textContent = editMode ? 'Edit ON' : 'View';
             }, 1500);
@@ -1410,49 +1515,41 @@ The program ran successfully, correctly calculating and printing the average of 
                 alert('Nothing to redo');
                 return;
             }
-            
             isUndoRedo = true;
             const state = redoStack.pop();
             const currentState = document.getElementById('pageContent').innerHTML;
             undoStack.push(currentState);
             document.getElementById('pageContent').innerHTML = state;
-            
             isUndoRedo = false;
             applyAllStyles();
             saveAppData();
-            
             const status = document.getElementById('editStatus');
-            status.textContent = 'Redo';
+            status.textContent = '↪️ Redo';
             setTimeout(() => {
                 status.textContent = editMode ? 'Edit ON' : 'View';
             }, 1500);
         }
 
         // ================================================================
-        // SECTION 5: POPULATE FONT SELECTORS
+        // SECTION 6: FONT SELECTORS
         // ================================================================
         function populateFontSelectors() {
             const selectors = ['headingFont', 'bodyFont'];
-            
             selectors.forEach(selectorId => {
                 const select = document.getElementById(selectorId);
                 if (!select) return;
-                
                 select.innerHTML = '';
-                
                 for (let i = 0; i < ALL_FONTS.length; i++) {
                     const option = document.createElement('option');
                     option.value = ALL_FONTS[i];
                     option.textContent = FONT_NAMES[i];
                     select.appendChild(option);
                 }
-                
                 let defaultFont = "'Merriweather', serif";
                 if (selectorId === 'headingFont') defaultFont = "'Montserrat', sans-serif";
-                
                 select.value = defaultFont;
             });
-            
+
             const codeSelect = document.getElementById('codeFont');
             if (codeSelect) {
                 codeSelect.innerHTML = '';
@@ -1467,7 +1564,7 @@ The program ran successfully, correctly calculating and printing the average of 
         }
 
         // ================================================================
-        // SECTION 6: MARKDOWN PARSER
+        // SECTION 7: MARKDOWN PARSER (CLEAN, NO AUTO PAGE BREAKS)
         // ================================================================
         function parseMarkdown(md) {
             const lines = md.split('\n');
@@ -1475,210 +1572,224 @@ The program ran successfully, correctly calculating and printing the average of 
             let currentSection = null;
             let currentContent = [];
             let title = 'Assignment';
-            
+            let pendingPageBreak = false;
+            const pageBreakBeforeSections = []; // list of section names with a break before
+
             for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                
-                if (!line) continue;
-                
+                const line = lines[i];
+                const trimmed = line.trim();
+
+                // Page break detection
+                if (trimmed === '<page-break>') {
+                    pendingPageBreak = true;
+                    // If we were in a section, save it (but we'll need to mark the next section)
+                    // We'll handle it when we start the next section
+                    continue;
+                }
+
+                if (!trimmed) continue;
+
+                // Title
                 if (line.startsWith('# ') && !line.startsWith('###')) {
                     title = line.replace('# ', '').trim();
                     continue;
                 }
-                
-                if (line === '---') continue;
-                if (line === '***') continue;
-                
+
+                // Separators
+                if (trimmed === '---' || trimmed === '***') continue;
+
+                // Section heading
                 const sectionMatch = line.match(/^###\s+(.+?)$/);
                 if (sectionMatch) {
+                    // Save previous section
                     if (currentSection && currentContent.length > 0) {
                         sections[currentSection] = currentContent.join('\n').trim();
                     }
                     currentSection = sectionMatch[1].toLowerCase().replace(/\s+/g, '_');
                     currentContent = [];
+
+                    // If we had a pending page break, mark this section
+                    if (pendingPageBreak) {
+                        pageBreakBeforeSections.push(currentSection);
+                        pendingPageBreak = false;
+                    }
                     continue;
                 }
-                
+
+                // Content inside a section
                 if (currentSection) {
                     currentContent.push(line);
                 }
             }
-            
+
+            // Save last section
             if (currentSection && currentContent.length > 0) {
                 sections[currentSection] = currentContent.join('\n').trim();
+                // If a page break was pending at the end (after last section), ignore it
             }
-            
-            return { title, sections };
+
+            return { title, sections, pageBreakBeforeSections };
         }
 
         // ================================================================
-        // SECTION 7: C CODE FORMATTER
+        // SECTION 8: C CODE FORMATTER
         // ================================================================
         function formatCCode(code) {
             const lines = code.split('\n').filter(line => line.trim());
             let result = [];
             let indentLevel = 0;
             const indentSize = 4;
-            
             for (let line of lines) {
                 const trimmed = line.trim();
-                
                 if (trimmed === '}' || trimmed.startsWith('}')) {
                     indentLevel = Math.max(0, indentLevel - 1);
                 }
-                
                 if (trimmed === 'else' || trimmed.startsWith('else ')) {
                     if (result.length > 0 && result[result.length - 1].trim().endsWith('{')) {
                         result[result.length - 1] = result[result.length - 1].trim().replace(/\{$/, '');
                     }
                     const indent = ' '.repeat(indentLevel * indentSize);
                     result.push(indent + trimmed);
-                    if (trimmed.endsWith('{')) {
-                        indentLevel++;
-                    }
+                    if (trimmed.endsWith('{')) indentLevel++;
                     continue;
                 }
-                
                 const endsWithBrace = trimmed.endsWith('{');
                 const indent = ' '.repeat(indentLevel * indentSize);
                 result.push(indent + trimmed);
-                
                 if (endsWithBrace && trimmed !== 'else' && !trimmed.startsWith('else ')) {
                     indentLevel++;
                 }
             }
-            
             return result.join('\n');
         }
 
         // ================================================================
-        // SECTION 8: ALGORITHM FORMATTER
+        // SECTION 9: ALGORITHM FORMATTER
         // ================================================================
         function formatAlgorithm(text) {
             const lines = text.split('\n').filter(line => line.trim());
             let result = [];
             let indentLevel = 0;
-            
             for (let line of lines) {
                 const trimmed = line.trim();
-                
                 if (trimmed.match(/^(Step\s+\d+|Step\s+\[|\d+\.)/i)) {
                     indentLevel = 0;
                 } else if (trimmed.startsWith('Step')) {
                     indentLevel = 1;
                 }
-                
                 const indent = ' '.repeat(indentLevel * 2);
                 result.push(indent + trimmed);
-                
                 if (trimmed.endsWith(':') || trimmed.includes('then') || trimmed.includes('→')) {
                     indentLevel = 1;
                 }
             }
-            
             return result.join('\n');
         }
 
         // ================================================================
-        // SECTION 9: RENDER ENGINE
+        // SECTION 10: RENDER ENGINE (CLEAN, NO AUTO PAGE BREAKS)
         // ================================================================
         function renderAssignment(markdown) {
             const parsed = parseMarkdown(markdown);
-            const { title, sections } = parsed;
+            const { title, sections, pageBreakBeforeSections } = parsed;
             const page = document.getElementById('pageContent');
-            
+
             page.innerHTML = '';
-            
+
+            // Title
             const titleDiv = document.createElement('div');
             titleDiv.className = 'header';
             titleDiv.setAttribute('contenteditable', 'false');
             titleDiv.setAttribute('data-field', 'title');
             titleDiv.textContent = title || 'Assignment';
             page.appendChild(titleDiv);
-            
+
             const divider = document.createElement('hr');
             divider.className = 'divider';
             page.appendChild(divider);
-            
+
             const sectionOrder = ['problem_statement', 'algorithm', 'source_code', 'input/output', 'discussion'];
-            
+
             sectionOrder.forEach(sectionName => {
                 const content = sections[sectionName];
                 if (!content) return;
-                
-                let sectionType = 'default';
-                let titleText = '';
-                
-                switch(sectionName) {
-                    case 'problem_statement':
-                        sectionType = 'problem';
-                        titleText = 'PROBLEM STATEMENT';
-                        break;
-                    case 'algorithm':
-                        sectionType = 'algorithm';
-                        titleText = 'ALGORITHM';
-                        break;
-                    case 'source_code':
-                        sectionType = 'source';
-                        titleText = 'SOURCE';
-                        break;
-                    case 'input/output':
-                        sectionType = 'io';
-                        titleText = 'INPUT / OUTPUT';
-                        break;
-                    case 'discussion':
-                        sectionType = 'discussion';
-                        titleText = 'DISCUSSION';
-                        break;
-                    default:
-                        return;
+
+                // Insert page break if this section is marked
+                if (pageBreakBeforeSections.includes(sectionName)) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'page-break-wrapper';
+                    wrapper.setAttribute('contenteditable', 'false');
+
+                    const indicator = document.createElement('div');
+                    indicator.className = 'page-break-indicator';
+                    const span = document.createElement('span');
+                    span.textContent = '⛔ PAGE BREAK ⛔';
+                    indicator.appendChild(span);
+                    wrapper.appendChild(indicator);
+
+                    const spacer = document.createElement('div');
+                    spacer.className = 'page-break-spacer';
+                    wrapper.appendChild(spacer);
+
+                    page.appendChild(wrapper);
                 }
-                
+
+                // Section title
+                let titleText = '';
+                switch (sectionName) {
+                    case 'problem_statement': titleText = 'PROBLEM STATEMENT'; break;
+                    case 'algorithm': titleText = 'ALGORITHM'; break;
+                    case 'source_code': titleText = 'SOURCE'; break;
+                    case 'input/output': titleText = 'INPUT / OUTPUT'; break;
+                    case 'discussion': titleText = 'DISCUSSION'; break;
+                    default: return;
+                }
                 const titleEl = document.createElement('div');
                 titleEl.className = 'section-title';
                 titleEl.setAttribute('contenteditable', 'false');
                 titleEl.setAttribute('data-field', `heading-${sectionName}`);
                 titleEl.textContent = titleText;
                 page.appendChild(titleEl);
-                
-                switch(sectionType) {
-                    case 'problem':
-                        const problemEl = document.createElement('div');
-                        problemEl.className = 'problem-statement';
-                        problemEl.setAttribute('contenteditable', 'false');
-                        problemEl.setAttribute('data-field', 'problem');
-                        problemEl.innerHTML = content.replace(/\n/g, '<br>');
-                        page.appendChild(problemEl);
+
+                // Section content
+                switch (sectionName) {
+                    case 'problem_statement': {
+                        const el = document.createElement('div');
+                        el.className = 'problem-statement';
+                        el.setAttribute('contenteditable', 'false');
+                        el.setAttribute('data-field', 'problem');
+                        el.innerHTML = content.replace(/\n/g, '<br>');
+                        page.appendChild(el);
                         break;
-                        
-                    case 'algorithm':
-                        const algoEl = document.createElement('div');
-                        algoEl.className = 'algorithm';
-                        algoEl.setAttribute('contenteditable', 'false');
-                        algoEl.setAttribute('data-field', 'algorithm');
-                        algoEl.textContent = content;
-                        page.appendChild(algoEl);
+                    }
+                    case 'algorithm': {
+                        const el = document.createElement('div');
+                        el.className = 'algorithm';
+                        el.setAttribute('contenteditable', 'false');
+                        el.setAttribute('data-field', 'algorithm');
+                        el.textContent = content;
+                        page.appendChild(el);
                         break;
-                        
-                    case 'source':
+                    }
+                    case 'source_code': {
                         const codeMatch = content.match(/```(\w*)\n([\s\S]*?)```/);
                         const codeContent = codeMatch ? codeMatch[2].trim() : content;
-                        
+
                         const codeContainer = document.createElement('div');
                         codeContainer.className = 'code-container';
-                        
+
                         const codeHeader = document.createElement('div');
                         codeHeader.className = 'code-header';
                         codeHeader.innerHTML = `<span>C Source Code</span>`;
                         codeContainer.appendChild(codeHeader);
-                        
+
                         const codeBlock = document.createElement('div');
                         codeBlock.className = 'code-block';
-                        
+
                         const lineNumbers = document.createElement('div');
                         lineNumbers.className = 'line-numbers';
                         codeBlock.appendChild(lineNumbers);
-                        
+
                         const codeEl = document.createElement('div');
                         codeEl.className = 'code-content';
                         codeEl.setAttribute('contenteditable', 'false');
@@ -1686,24 +1797,23 @@ The program ran successfully, correctly calculating and printing the average of 
                         codeEl.setAttribute('spellcheck', 'false');
                         codeEl.textContent = codeContent;
                         codeBlock.appendChild(codeEl);
-                        
+
                         codeContainer.appendChild(codeBlock);
                         page.appendChild(codeContainer);
-                        
+
                         setTimeout(() => updateLineNumbersFor(codeEl), 10);
                         break;
-                        
-                    case 'io':
+                    }
+                    case 'input/output': {
                         const table = document.createElement('table');
                         table.className = 'io-table';
                         table.setAttribute('data-table', 'true');
-                        
+
                         const tableRows = content.split('\n').filter(line => line.trim().startsWith('|'));
                         if (tableRows.length > 0) {
                             const thead = document.createElement('thead');
                             const headerRow = document.createElement('tr');
                             const headers = parseTableRow(tableRows[0]);
-                            
                             headers.forEach((h, idx) => {
                                 const th = document.createElement('th');
                                 th.setAttribute('contenteditable', 'false');
@@ -1711,10 +1821,9 @@ The program ran successfully, correctly calculating and printing the average of 
                                 th.innerHTML = h.replace(/\n/g, '<br>');
                                 headerRow.appendChild(th);
                             });
-                            
                             thead.appendChild(headerRow);
                             table.appendChild(thead);
-                            
+
                             const tbody = document.createElement('tbody');
                             for (let i = 2; i < tableRows.length; i++) {
                                 const cells = parseTableRow(tableRows[i]);
@@ -1729,7 +1838,7 @@ The program ran successfully, correctly calculating and printing the average of 
                                         td.innerHTML = cell.replace(/\n/g, '<br>');
                                         tr.appendChild(td);
                                     });
-                                    
+                                    // Delete button
                                     const delTd = document.createElement('td');
                                     delTd.className = 'col-actions';
                                     delTd.style.width = '30px';
@@ -1756,23 +1865,21 @@ The program ran successfully, correctly calculating and printing the average of 
                                     };
                                     delTd.appendChild(delBtn);
                                     tr.appendChild(delTd);
-                                    
                                     tbody.appendChild(tr);
                                 }
                             }
                             table.appendChild(tbody);
                         } else {
+                            // Fallback empty table
                             const thead = document.createElement('thead');
                             const headerRow = document.createElement('tr');
-                            const th1 = document.createElement('th');
-                            th1.textContent = 'Input';
-                            headerRow.appendChild(th1);
-                            const th2 = document.createElement('th');
-                            th2.textContent = 'Output';
-                            headerRow.appendChild(th2);
+                            ['Input', 'Output'].forEach(label => {
+                                const th = document.createElement('th');
+                                th.textContent = label;
+                                headerRow.appendChild(th);
+                            });
                             thead.appendChild(headerRow);
                             table.appendChild(thead);
-                            
                             const tbody = document.createElement('tbody');
                             const tr = document.createElement('tr');
                             const td1 = document.createElement('td');
@@ -1785,7 +1892,6 @@ The program ran successfully, correctly calculating and printing the average of 
                             td2.className = 'output-cell';
                             td2.textContent = 'Output will appear here';
                             tr.appendChild(td2);
-                            
                             const delTd = document.createElement('td');
                             delTd.className = 'col-actions';
                             delTd.style.width = '30px';
@@ -1807,18 +1913,14 @@ The program ran successfully, correctly calculating and printing the average of 
                             };
                             delTd.appendChild(delBtn);
                             tr.appendChild(delTd);
-                            
                             tbody.appendChild(tr);
                             table.appendChild(tbody);
                         }
                         page.appendChild(table);
-                        
-                        setTimeout(() => {
-                            applyIOStylesDirect();
-                        }, 100);
+                        setTimeout(() => applyIOStylesDirect(), 100);
                         break;
-                        
-                    case 'discussion':
+                    }
+                    case 'discussion': {
                         const discEl = document.createElement('div');
                         discEl.className = 'discussion';
                         discEl.setAttribute('contenteditable', 'false');
@@ -1835,11 +1937,13 @@ The program ran successfully, correctly calculating and printing the average of 
                         }
                         page.appendChild(discEl);
                         break;
+                    }
                 }
             });
-            
+
             currentMarkdown = markdown;
-            saveState();
+            undoStack = [page.innerHTML];
+            redoStack = [];
             applyAllStyles();
             setTimeout(function() {
                 initGaps();
@@ -1849,7 +1953,7 @@ The program ran successfully, correctly calculating and printing the average of 
         }
 
         // ================================================================
-        // SECTION 10: TABLE HELPERS
+        // SECTION 11: TABLE HELPERS
         // ================================================================
         function parseTableRow(row) {
             return row.trim()
@@ -1865,7 +1969,6 @@ The program ran successfully, correctly calculating and printing the average of 
             if (!block) return;
             const numbersEl = block.querySelector('.line-numbers');
             if (!numbersEl) return;
-            
             const text = codeEl.textContent || '';
             const lines = text.split('\n');
             const count = Math.max(lines.length, 1);
@@ -1878,101 +1981,69 @@ The program ran successfully, correctly calculating and printing the average of 
         }
 
         // ================================================================
-        // SECTION 11: I/O TABLE STYLING FUNCTIONS
+        // SECTION 12: I/O TABLE STYLING
         // ================================================================
         function applyIOStylesDirect() {
-            var inputSelect = document.getElementById('ioInputFont');
-            var outputSelect = document.getElementById('ioOutputFont');
-            var inputSizeSelect = document.getElementById('ioInputSize');
-            var outputSizeSelect = document.getElementById('ioOutputSize');
-            
-            var inputFont = inputSelect ? inputSelect.value : "'Fira Code', monospace";
-            var outputFont = outputSelect ? outputSelect.value : "'Roboto', sans-serif";
-            var inputSize = inputSizeSelect ? inputSizeSelect.value : "10.5";
-            var outputSize = outputSizeSelect ? outputSizeSelect.value : "10.5";
-            
-            document.querySelectorAll('.io-table .input-cell').forEach(function(cell) {
+            const inputFont = document.getElementById('ioInputFont')?.value || "'Fira Code', monospace";
+            const outputFont = document.getElementById('ioOutputFont')?.value || "'Roboto', sans-serif";
+            const inputSize = document.getElementById('ioInputSize')?.value || "10.5";
+            const outputSize = document.getElementById('ioOutputSize')?.value || "10.5";
+
+            document.querySelectorAll('.io-table .input-cell').forEach(cell => {
                 cell.style.fontFamily = inputFont;
                 cell.style.fontSize = inputSize + 'pt';
                 cell.style.fontWeight = '500';
                 cell.style.lineHeight = '1.0';
                 cell.style.padding = '2px 6px';
             });
-            
-            document.querySelectorAll('.io-table .output-cell').forEach(function(cell) {
+            document.querySelectorAll('.io-table .output-cell').forEach(cell => {
                 cell.style.fontFamily = outputFont;
                 cell.style.fontSize = outputSize + 'pt';
                 cell.style.fontWeight = '500';
                 cell.style.lineHeight = '1.0';
                 cell.style.padding = '2px 6px';
             });
-            
-            console.log('✅ I/O Fonts applied: Input=' + inputFont + ', Output=' + outputFont);
         }
 
         function changeIOInputSize(size) {
-            var pt = parseFloat(size);
-            document.querySelectorAll('.io-table .input-cell').forEach(function(el) {
-                el.style.fontSize = pt + 'pt';
-            });
+            const pt = parseFloat(size);
+            document.querySelectorAll('.io-table .input-cell').forEach(el => el.style.fontSize = pt + 'pt');
             saveAppData();
         }
-
         function changeIOOutputSize(size) {
-            var pt = parseFloat(size);
-            document.querySelectorAll('.io-table .output-cell').forEach(function(el) {
-                el.style.fontSize = pt + 'pt';
-            });
+            const pt = parseFloat(size);
+            document.querySelectorAll('.io-table .output-cell').forEach(el => el.style.fontSize = pt + 'pt');
             saveAppData();
         }
-
         function changeIOInputFont(font) {
-            document.querySelectorAll('.io-table .input-cell').forEach(function(el) {
-                el.style.fontFamily = font;
-            });
+            document.querySelectorAll('.io-table .input-cell').forEach(el => el.style.fontFamily = font);
             saveAppData();
-            console.log('Input font changed to:', font);
         }
-
         function changeIOOutputFont(font) {
-            document.querySelectorAll('.io-table .output-cell').forEach(function(el) {
-                el.style.fontFamily = font;
-            });
+            document.querySelectorAll('.io-table .output-cell').forEach(el => el.style.fontFamily = font);
             saveAppData();
-            console.log('Output font changed to:', font);
         }
 
         // ================================================================
-        // SECTION 12: TABLE OPERATIONS
+        // SECTION 13: TABLE OPERATIONS (unchanged)
         // ================================================================
         function getTable() {
             const el = getFocusedElement();
-            if (!el) {
-                alert('Please click inside the table first.');
-                return null;
-            }
-            
+            if (!el) { alert('Please click inside the table first.'); return null; }
             const table = el.closest('.io-table');
-            if (!table) {
-                alert('Please click inside the table first.');
-                return null;
-            }
+            if (!table) { alert('Please click inside the table first.'); return null; }
             return table;
         }
 
         function addTableRow() {
             const table = getTable();
             if (!table) return;
-            
             const tbody = table.querySelector('tbody');
             if (!tbody) return;
-            
             const firstRow = tbody.querySelector('tr');
             if (!firstRow) return;
-            
             const cells = firstRow.querySelectorAll('td:not(.col-actions)');
             const newRow = document.createElement('tr');
-            
             cells.forEach((cell, index) => {
                 const td = document.createElement('td');
                 td.setAttribute('contenteditable', 'true');
@@ -1980,7 +2051,6 @@ The program ran successfully, correctly calculating and printing the average of 
                 td.textContent = 'New value';
                 newRow.appendChild(td);
             });
-            
             const delTd = document.createElement('td');
             delTd.className = 'col-actions';
             delTd.style.width = '30px';
@@ -1989,10 +2059,7 @@ The program ran successfully, correctly calculating and printing the average of 
             const delBtn = document.createElement('button');
             delBtn.className = 'row-delete-btn';
             delBtn.textContent = '×';
-            delBtn.onmousedown = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            };
+            delBtn.onmousedown = e => e.preventDefault();
             delBtn.onclick = function(e) {
                 e.stopPropagation();
                 if (confirm('Delete this row?')) {
@@ -2007,46 +2074,30 @@ The program ran successfully, correctly calculating and printing the average of 
             };
             delTd.appendChild(delBtn);
             newRow.appendChild(delTd);
-            
             tbody.appendChild(newRow);
             saveState();
-            
-            setTimeout(function() {
-                applyIOStylesDirect();
-            }, 50);
-            
+            setTimeout(applyIOStylesDirect, 50);
             const status = document.getElementById('editStatus');
             status.textContent = 'Row added!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         function deleteTableRow() {
             const table = getTable();
             if (!table) return;
-            
             const tbody = table.querySelector('tbody');
             if (!tbody) return;
-            
             const rows = tbody.querySelectorAll('tr');
-            if (rows.length <= 1) {
-                alert('Cannot delete the last row.');
-                return;
-            }
-            
+            if (rows.length <= 1) { alert('Cannot delete the last row.'); return; }
             const el = getFocusedElement();
             const row = el ? el.closest('tr') : null;
-            
             if (row && row.parentElement === tbody) {
                 if (confirm('Delete this row?')) {
                     row.remove();
                     saveState();
                     const status = document.getElementById('editStatus');
                     status.textContent = 'Row deleted!';
-                    setTimeout(() => {
-                        status.textContent = editMode ? 'Edit ON' : 'View';
-                    }, 1500);
+                    setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
                 }
             } else {
                 alert('Please click inside a row first.');
@@ -2056,9 +2107,7 @@ The program ran successfully, correctly calculating and printing the average of 
         function addTableColumn() {
             const table = getTable();
             if (!table) return;
-            
             const allRows = table.querySelectorAll('tr');
-            
             const headerRow = allRows[0];
             if (headerRow) {
                 const newTh = document.createElement('th');
@@ -2066,7 +2115,6 @@ The program ran successfully, correctly calculating and printing the average of 
                 newTh.textContent = 'New Col';
                 headerRow.appendChild(newTh);
             }
-            
             for (let i = 1; i < allRows.length; i++) {
                 const row = allRows[i];
                 const newTd = document.createElement('td');
@@ -2074,43 +2122,26 @@ The program ran successfully, correctly calculating and printing the average of 
                 newTd.className = 'output-cell';
                 newTd.textContent = 'New value';
                 const delCol = row.querySelector('.col-actions');
-                if (delCol) {
-                    row.insertBefore(newTd, delCol);
-                } else {
-                    row.appendChild(newTd);
-                }
+                if (delCol) row.insertBefore(newTd, delCol);
+                else row.appendChild(newTd);
             }
-            
             saveState();
-            
-            setTimeout(function() {
-                applyIOStylesDirect();
-            }, 50);
-            
+            setTimeout(applyIOStylesDirect, 50);
             const status = document.getElementById('editStatus');
             status.textContent = 'Column added!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         function deleteTableColumn() {
             const table = getTable();
             if (!table) return;
-            
             const allRows = table.querySelectorAll('tr');
-            
             const firstRow = allRows[0];
             const headerCells = firstRow.querySelectorAll('th:not(.col-actions)');
-            if (headerCells.length <= 1) {
-                alert('Cannot delete the last column.');
-                return;
-            }
-            
+            if (headerCells.length <= 1) { alert('Cannot delete the last column.'); return; }
             if (confirm('Delete the last column?')) {
                 const lastTh = firstRow.querySelector('th:not(.col-actions):last-child');
                 if (lastTh) lastTh.remove();
-                
                 for (let i = 1; i < allRows.length; i++) {
                     const row = allRows[i];
                     const cells = row.querySelectorAll('td:not(.col-actions)');
@@ -2119,374 +2150,207 @@ The program ran successfully, correctly calculating and printing the average of 
                         if (lastTd) lastTd.remove();
                     }
                 }
-                
                 saveState();
-                
                 const status = document.getElementById('editStatus');
                 status.textContent = 'Column deleted!';
-                setTimeout(() => {
-                    status.textContent = editMode ? 'Edit ON' : 'View';
-                }, 1500);
+                setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
             }
         }
 
         // ================================================================
-        // SECTION 13: GAP CONTROLS - ONE SLIDER WITH 3 MODES
+        // SECTION 14: GAP CONTROLS
         // ================================================================
-        
-        // Set the gap mode
         function setGapMode(mode) {
             currentGapMode = mode;
-            
-            var slider = document.getElementById('gapSlider');
-            var label = document.getElementById('gapSliderLabel');
-            var value = gapValues[mode] || 0;
-            
+            const slider = document.getElementById('gapSlider');
+            const label = document.getElementById('gapSliderLabel');
+            const value = gapValues[mode] || 0;
             slider.value = value;
             label.textContent = value;
-            
             slider.className = 'mode-' + mode;
-            
-            document.querySelectorAll('input[name="gapMode"]').forEach(function(radio) {
-                radio.checked = (radio.value === mode);
-            });
-            
+            document.querySelectorAll('input[name="gapMode"]').forEach(r => r.checked = r.value === mode);
             updateGapFromSlider(value);
             saveAppData();
         }
 
-        // Update gap from slider
         function updateGapFromSlider(value) {
-            var gap = parseInt(value) || 0;
-            
+            const gap = parseInt(value) || 0;
             document.getElementById('gapSliderLabel').textContent = gap;
             gapValues[currentGapMode] = gap;
-            
-            switch(currentGapMode) {
-                case 'section':
-                    updateSectionGap(gap);
-                    break;
-                case 'heading':
-                    updateHeadingGap(gap);
-                    break;
-                case 'paragraph':
-                    updateParagraphGap(gap);
-                    break;
+            switch (currentGapMode) {
+                case 'section': updateSectionGap(gap); break;
+                case 'heading': updateHeadingGap(gap); break;
+                case 'paragraph': updateParagraphGap(gap); break;
             }
-            
             updatePrintGaps();
             saveAppData();
         }
 
-        // 1. Section Gap - BETWEEN sections
         function updateSectionGap(value) {
-            var gap = parseInt(value) || 0;
-            
-            document.querySelectorAll('.section-title:not(:first-of-type)').forEach(function(el) {
-                el.style.marginTop = gap + 'px';
-            });
-            
-            document.querySelectorAll('.section-title:first-of-type').forEach(function(el) {
-                el.style.marginTop = Math.max(0, Math.floor(gap / 2)) + 'px';
-            });
+            const gap = parseInt(value) || 0;
+            document.querySelectorAll('.section-title:not(:first-of-type)').forEach(el => el.style.marginTop = gap + 'px');
+            document.querySelectorAll('.section-title:first-of-type').forEach(el => el.style.marginTop = Math.max(0, Math.floor(gap / 2)) + 'px');
         }
 
-        // 2. Heading-Text Gap - Between heading and its content
         function updateHeadingGap(value) {
-            var gap = parseInt(value) || 0;
-            
-            document.querySelectorAll('.section-title + .problem-statement, .section-title + .algorithm, .section-title + .code-container, .section-title + .io-table, .section-title + .discussion').forEach(function(el) {
-                el.style.marginTop = gap + 'px';
-            });
+            const gap = parseInt(value) || 0;
+            document.querySelectorAll('.section-title + .problem-statement, .section-title + .algorithm, .section-title + .code-container, .section-title + .io-table, .section-title + .discussion')
+                .forEach(el => el.style.marginTop = gap + 'px');
         }
 
-        // 3. Paragraph Gap - Between paragraphs inside text sections
         function updateParagraphGap(value) {
-            var gap = parseInt(value) || 0;
-            
-            document.querySelectorAll('.discussion p, .problem-statement p').forEach(function(el) {
-                el.style.marginTop = gap + 'px';
-            });
-            
-            document.querySelectorAll('.discussion p + p, .problem-statement p + p').forEach(function(el) {
-                el.style.marginTop = gap + 'px';
-            });
+            const gap = parseInt(value) || 0;
+            document.querySelectorAll('.discussion p, .problem-statement p').forEach(el => el.style.marginTop = gap + 'px');
+            document.querySelectorAll('.discussion p + p, .problem-statement p + p').forEach(el => el.style.marginTop = gap + 'px');
         }
 
-        // Reset all gaps to defaults
         function resetGaps() {
-            gapValues = {
-                section: 12,
-                heading: 0,
-                paragraph: 2
-            };
-            
-            var slider = document.getElementById('gapSlider');
-            var value = gapValues[currentGapMode];
+            gapValues = { section: 12, heading: 0, paragraph: 2 };
+            const slider = document.getElementById('gapSlider');
+            const value = gapValues[currentGapMode];
             slider.value = value;
             document.getElementById('gapSliderLabel').textContent = value;
-            
             updateGapFromSlider(value);
             updatePrintGaps();
             saveAppData();
-            
-            var status = document.getElementById('editStatus');
+            const status = document.getElementById('editStatus');
             status.textContent = '🔄 Gaps reset!';
-            setTimeout(function() {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
-        // Initialize gaps on page load
         function initGaps() {
-            var defaultMode = 'section';
-            
-            gapValues = {
-                section: 12,
-                heading: 0,
-                paragraph: 2
-            };
-            
-            setGapMode(defaultMode);
-            
+            gapValues = { section: 12, heading: 0, paragraph: 2 };
+            setGapMode('section');
             updateSectionGap(gapValues.section);
             updateHeadingGap(gapValues.heading);
             updateParagraphGap(gapValues.paragraph);
             updatePrintGaps();
         }
 
-        // ================================================================
-        // SECTION 14: APPLY GAPS TO PRINT
-        // ================================================================
         function updatePrintGaps() {
-            var sectionGap = gapValues.section || 12;
-            var headingGap = gapValues.heading || 0;
-            var paragraphGap = gapValues.paragraph || 2;
-            
-            var styleTag = document.getElementById('printGapStyles');
+            const sectionGap = gapValues.section || 12;
+            const headingGap = gapValues.heading || 0;
+            const paragraphGap = gapValues.paragraph || 2;
+            let styleTag = document.getElementById('printGapStyles');
             if (!styleTag) {
                 styleTag = document.createElement('style');
                 styleTag.id = 'printGapStyles';
                 document.head.appendChild(styleTag);
             }
-            
             styleTag.textContent = `
                 @media print {
-                    .section-title:not(:first-of-type) {
-                        margin-top: ${sectionGap}px !important;
-                    }
-                    .section-title:first-of-type {
-                        margin-top: ${Math.max(0, Math.floor(sectionGap / 2))}px !important;
-                    }
+                    .section-title:not(:first-of-type) { margin-top: ${sectionGap}px !important; }
+                    .section-title:first-of-type { margin-top: ${Math.max(0, Math.floor(sectionGap / 2))}px !important; }
                     .section-title + .problem-statement,
                     .section-title + .algorithm,
                     .section-title + .code-container,
                     .section-title + .io-table,
-                    .section-title + .discussion {
-                        margin-top: ${headingGap}px !important;
-                    }
-                    .discussion p,
-                    .problem-statement p {
-                        margin-top: ${paragraphGap}px !important;
-                    }
-                    .discussion p + p,
-                    .problem-statement p + p {
-                        margin-top: ${paragraphGap}px !important;
-                    }
+                    .section-title + .discussion { margin-top: ${headingGap}px !important; }
+                    .discussion p, .problem-statement p { margin-top: ${paragraphGap}px !important; }
+                    .discussion p + p, .problem-statement p + p { margin-top: ${paragraphGap}px !important; }
                 }
             `;
         }
 
         // ================================================================
-        // SECTION 15: GAP CONTROL (Legacy - kept for compatibility)
-        // ================================================================
-        function applyGap() {
-            updateSectionGap(gapValues.section);
-            updateHeadingGap(gapValues.heading);
-            updateParagraphGap(gapValues.paragraph);
-            updatePrintGaps();
-        }
-
-        // ================================================================
-        // SECTION 16: FONT WEIGHT CONTROLS
+        // SECTION 15: FONT WEIGHT
         // ================================================================
         function applyWeight(weight) {
             const el = getFocusedElement();
-            if (!el) {
-                alert('Please click inside a text section first.');
-                return;
-            }
-            
+            if (!el) { alert('Please click inside a text section first.'); return; }
             el.classList.remove('weight-thin', 'weight-light', 'weight-regular', 'weight-medium', 'weight-bold', 'weight-black');
-            
-            const weightMap = {
-                '100': 'weight-thin',
-                '300': 'weight-light',
-                '400': 'weight-regular',
-                '500': 'weight-medium',
-                '700': 'weight-bold',
-                '900': 'weight-black'
-            };
-            
-            if (weightMap[weight]) {
-                el.classList.add(weightMap[weight]);
-            }
-            
+            const map = { '100': 'weight-thin', '300': 'weight-light', '400': 'weight-regular', '500': 'weight-medium', '700': 'weight-bold', '900': 'weight-black' };
+            if (map[weight]) el.classList.add(map[weight]);
+            document.querySelectorAll('.weight-controls button').forEach(btn => btn.classList.remove('active-weight'));
+            const names = { '100': 'Thin', '300': 'Light', '400': 'Reg', '500': 'Med', '700': 'Bold', '900': 'Black' };
             document.querySelectorAll('.weight-controls button').forEach(btn => {
-                btn.classList.remove('active-weight');
+                if (btn.textContent === names[weight]) btn.classList.add('active-weight');
             });
-            const weightNames = {'100':'Thin','300':'Light','400':'Reg','500':'Med','700':'Bold','900':'Black'};
-            document.querySelectorAll('.weight-controls button').forEach(btn => {
-                if (btn.textContent === weightNames[weight]) {
-                    btn.classList.add('active-weight');
-                }
-            });
-            
             saveState();
-            
             const status = document.getElementById('editStatus');
-            status.textContent = 'Weight: ' + weightNames[weight];
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            status.textContent = 'Weight: ' + names[weight];
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         // ================================================================
-        // SECTION 17: SIZE FUNCTIONS
+        // SECTION 16: SIZE FUNCTIONS
         // ================================================================
         function changeOverallSize(size) {
             const pt = parseFloat(size);
-            const allElements = document.querySelectorAll('.header, .section-title, .problem-statement, .algorithm, .discussion, .io-table td, .io-table th, .code-content, .line-numbers');
-            
-            allElements.forEach(el => {
-                const isHeader = el.classList.contains('header');
-                const isSectionTitle = el.classList.contains('section-title');
-                const isProblem = el.classList.contains('problem-statement');
-                const isAlgo = el.classList.contains('algorithm');
-                const isDiscussion = el.classList.contains('discussion');
-                const isTable = el.closest('.io-table') !== null;
-                const isCode = el.classList.contains('code-content') || el.classList.contains('line-numbers');
-                const isInputCell = el.classList.contains('input-cell');
-                const isOutputCell = el.classList.contains('output-cell');
-                
-                if (isInputCell || isOutputCell) return;
-                
-                if (isHeader && !document.getElementById('headSize').value) {
+            document.querySelectorAll('.header, .section-title, .problem-statement, .algorithm, .discussion, .io-table td, .io-table th, .code-content, .line-numbers')
+                .forEach(el => {
+                    if (el.classList.contains('input-cell') || el.classList.contains('output-cell')) return;
                     el.style.fontSize = pt + 'pt';
-                } else if ((isSectionTitle || isProblem || isAlgo || isDiscussion || isTable) && !document.getElementById('bodySize').value) {
-                    el.style.fontSize = pt + 'pt';
-                } else if (isCode && !document.getElementById('codeSize').value) {
-                    el.style.fontSize = pt + 'pt';
-                } else if (!isHeader && !isSectionTitle && !isProblem && !isAlgo && !isDiscussion && !isTable && !isCode) {
-                    el.style.fontSize = pt + 'pt';
-                }
-            });
-            
+                });
             document.body.style.fontSize = pt + 'pt';
             saveAppData();
         }
-
         function changeHeadSize(size) {
             const pt = parseFloat(size);
-            document.querySelectorAll('.header').forEach(el => {
-                el.style.fontSize = pt + 'pt';
-            });
+            document.querySelectorAll('.header').forEach(el => el.style.fontSize = pt + 'pt');
             saveAppData();
         }
-
         function changeBodySize(size) {
             const pt = parseFloat(size);
-            document.querySelectorAll('.section-title, .problem-statement, .algorithm, .discussion, .io-table th').forEach(el => {
-                el.style.fontSize = pt + 'pt';
-            });
+            document.querySelectorAll('.section-title, .problem-statement, .algorithm, .discussion, .io-table th')
+                .forEach(el => el.style.fontSize = pt + 'pt');
             saveAppData();
         }
-
         function changeCodeSize(size) {
             const pt = parseFloat(size);
-            document.querySelectorAll('.code-content, .line-numbers').forEach(el => {
-                el.style.fontSize = pt + 'pt';
-            });
+            document.querySelectorAll('.code-content, .line-numbers').forEach(el => el.style.fontSize = pt + 'pt');
             saveAppData();
         }
-
         function changeSpecificSize(size) {
             const pt = parseFloat(size);
             if (focusedSectionType) {
-                const classMap = {
-                    'code-content': '.code-content',
-                    'algorithm': '.algorithm',
-                    'io-table': '.io-table td, .io-table th',
-                    'problem-statement': '.problem-statement',
-                    'discussion': '.discussion',
-                    'text': '[data-field]'
-                };
-                
-                const selector = classMap[focusedSectionType] || '[data-field]';
-                document.querySelectorAll(selector).forEach(el => {
-                    el.style.fontSize = pt + 'pt';
-                });
+                const map = { 'code-content': '.code-content', 'algorithm': '.algorithm', 'io-table': '.io-table td, .io-table th', 'problem-statement': '.problem-statement', 'discussion': '.discussion', 'text': '[data-field]' };
+                const selector = map[focusedSectionType] || '[data-field]';
+                document.querySelectorAll(selector).forEach(el => el.style.fontSize = pt + 'pt');
             }
             saveAppData();
         }
 
         // ================================================================
-        // SECTION 18: FONT FUNCTIONS
+        // SECTION 17: FONT FUNCTIONS
         // ================================================================
         function changeHeadingFont(font) {
-            document.querySelectorAll('.header, .section-title, .io-table th').forEach(el => {
-                el.style.fontFamily = font;
-            });
+            document.querySelectorAll('.header, .section-title, .io-table th').forEach(el => el.style.fontFamily = font);
             saveAppData();
         }
-
         function changeBodyFont(font) {
-            document.querySelectorAll('.problem-statement, .algorithm, .discussion, .io-table td:not(.input-cell):not(.output-cell)').forEach(el => {
-                if (!el.closest('.code-container')) {
-                    el.style.fontFamily = font;
-                }
-            });
+            document.querySelectorAll('.problem-statement, .algorithm, .discussion, .io-table td:not(.input-cell):not(.output-cell)')
+                .forEach(el => { if (!el.closest('.code-container')) el.style.fontFamily = font; });
             saveAppData();
         }
-
         function changeCodeFont(font) {
-            document.querySelectorAll('.code-content, .line-numbers').forEach(el => {
-                el.style.fontFamily = font;
-            });
+            document.querySelectorAll('.code-content, .line-numbers').forEach(el => el.style.fontFamily = font);
             saveAppData();
         }
 
         // ================================================================
-        // SECTION 19: PAGE MARGINS
+        // SECTION 18: PAGE MARGINS
         // ================================================================
         function updatePageMargins() {
             const top = document.getElementById('marginTop').value;
             const right = document.getElementById('marginRight').value;
             const bottom = document.getElementById('marginBottom').value;
             const left = document.getElementById('marginLeft').value;
-            
             document.querySelectorAll('.page').forEach(page => {
                 page.style.padding = top + 'mm ' + right + 'mm ' + bottom + 'mm ' + left + 'mm';
             });
-            
             let styleTag = document.getElementById('dynamicPrintMargins');
             if (!styleTag) {
                 styleTag = document.createElement('style');
                 styleTag.id = 'dynamicPrintMargins';
                 document.head.appendChild(styleTag);
             }
-            
-            styleTag.textContent = `
-                @page {
-                    margin: ${top}mm ${right}mm ${bottom}mm ${left}mm !important;
-                }
-            `;
-            
+            styleTag.textContent = `@page { margin: ${top}mm ${right}mm ${bottom}mm ${left}mm !important; }`;
             saveAppData();
         }
 
         // ================================================================
-        // SECTION 20: IMPORT/EXPORT
+        // SECTION 19: IMPORT / EXPORT
         // ================================================================
         function importMarkdown() {
             const input = document.createElement('input');
@@ -2504,9 +2368,7 @@ The program ran successfully, correctly calculating and printing the average of 
                         saveAppData();
                         const status = document.getElementById('editStatus');
                         status.textContent = '✅ Imported!';
-                        setTimeout(() => {
-                            status.textContent = editMode ? 'Edit ON' : 'View';
-                        }, 2000);
+                        setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 2000);
                     } catch (error) {
                         alert('Error importing markdown: ' + error.message);
                     }
@@ -2517,7 +2379,7 @@ The program ran successfully, correctly calculating and printing the average of 
         }
 
         function downloadTemplate() {
-            const templateWithCommands = `# Assignment
+            const template = `# Assignment
 ---
 
 ### PROBLEM STATEMENT
@@ -2531,6 +2393,8 @@ Output: output_description
 Step 1: Description of step 1
 Step 2: Description of step 2
 Step 3: Description of step 3
+
+<page-break>
 
 ### SOURCE CODE
 \`\`\`c
@@ -2566,7 +2430,7 @@ Any content you want.
 ### ANOTHER SECTION
 More content here.`;
 
-            const blob = new Blob([templateWithCommands], { type: 'text/markdown;charset=utf-8' });
+            const blob = new Blob([template], { type: 'text/markdown;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -2575,16 +2439,13 @@ More content here.`;
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
             const status = document.getElementById('editStatus');
             status.textContent = '📄 Template downloaded!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 2000);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 2000);
         }
 
         // ================================================================
-        // SECTION 21: CONTEXT-AWARE TOOLBAR
+        // SECTION 20: CONTEXT & FOCUS
         // ================================================================
         function updateContext(element) {
             const toolbar = document.getElementById('toolbar');
@@ -2593,11 +2454,9 @@ More content here.`;
             const specificSizeGroup = document.getElementById('specificSizeGroup');
             const ioSizeGroup = document.getElementById('ioSizeGroup');
             const ioFontGroup = document.getElementById('ioFontGroup');
-            
-            document.querySelectorAll('.context-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
+
+            document.querySelectorAll('.context-btn').forEach(btn => btn.classList.remove('active'));
+
             if (!element) {
                 toolbar.classList.remove('context-active');
                 contextHint.classList.remove('active');
@@ -2607,7 +2466,7 @@ More content here.`;
                 focusedSectionType = null;
                 return;
             }
-            
+
             const isCode = element.classList.contains('code-content');
             const isAlgorithm = element.classList.contains('algorithm');
             const isTable = element.closest('.io-table') !== null;
@@ -2615,10 +2474,10 @@ More content here.`;
             const isDiscussion = element.closest('.discussion') !== null;
             const isTextElement = element.closest('[data-field]') !== null && !isCode && !isAlgorithm && !isTable;
             const isRendered = element.classList.contains('rendered-markdown');
-            
+
             toolbar.classList.add('context-active');
             contextHint.classList.add('active');
-            
+
             if (isCode) {
                 focusedSectionType = 'code-content';
                 contextName.textContent = 'Code';
@@ -2626,9 +2485,7 @@ More content here.`;
                 specificSizeGroup.style.display = 'flex';
                 ioSizeGroup.style.display = 'none';
                 ioFontGroup.style.display = 'none';
-                if (isRendered) {
-                    document.getElementById('ctxUnrenderMD').classList.add('active');
-                }
+                if (isRendered) document.getElementById('ctxUnrenderMD').classList.add('active');
             } else if (isAlgorithm) {
                 focusedSectionType = 'algorithm';
                 contextName.textContent = 'Algorithm';
@@ -2650,9 +2507,7 @@ More content here.`;
                 focusedSectionType = 'problem-statement';
                 contextName.textContent = 'Problem';
                 document.getElementById('ctxRenderMD').classList.add('active');
-                if (isRendered) {
-                    document.getElementById('ctxUnrenderMD').classList.add('active');
-                }
+                if (isRendered) document.getElementById('ctxUnrenderMD').classList.add('active');
                 specificSizeGroup.style.display = 'flex';
                 ioSizeGroup.style.display = 'none';
                 ioFontGroup.style.display = 'none';
@@ -2660,9 +2515,7 @@ More content here.`;
                 focusedSectionType = 'discussion';
                 contextName.textContent = 'Discussion';
                 document.getElementById('ctxRenderMD').classList.add('active');
-                if (isRendered) {
-                    document.getElementById('ctxUnrenderMD').classList.add('active');
-                }
+                if (isRendered) document.getElementById('ctxUnrenderMD').classList.add('active');
                 specificSizeGroup.style.display = 'flex';
                 ioSizeGroup.style.display = 'none';
                 ioFontGroup.style.display = 'none';
@@ -2670,9 +2523,7 @@ More content here.`;
                 focusedSectionType = 'text';
                 contextName.textContent = 'Text';
                 document.getElementById('ctxRenderMD').classList.add('active');
-                if (isRendered) {
-                    document.getElementById('ctxUnrenderMD').classList.add('active');
-                }
+                if (isRendered) document.getElementById('ctxUnrenderMD').classList.add('active');
                 specificSizeGroup.style.display = 'flex';
                 ioSizeGroup.style.display = 'none';
                 ioFontGroup.style.display = 'none';
@@ -2682,129 +2533,80 @@ More content here.`;
                 ioSizeGroup.style.display = 'none';
                 ioFontGroup.style.display = 'none';
             }
-            
+
             document.getElementById('ctxAlignLeft').classList.add('active');
             document.getElementById('ctxAlignCenter').classList.add('active');
             document.getElementById('ctxAlignRight').classList.add('active');
             document.getElementById('ctxAlignJustify').classList.add('active');
         }
 
-        // ================================================================
-        // SECTION 22: FOCUS TRACKING
-        // ================================================================
         function getFocusedElement() {
             const active = document.activeElement;
-            if (active && (active.matches('[contenteditable="true"]') || active.matches('[data-field]'))) {
-                return active;
-            }
-            
-            if (lastFocusedElement && document.contains(lastFocusedElement)) {
-                return lastFocusedElement;
-            }
-            
+            if (active && (active.matches('[contenteditable="true"]') || active.matches('[data-field]'))) return active;
+            if (lastFocusedElement && document.contains(lastFocusedElement)) return lastFocusedElement;
             const editable = document.querySelector('[contenteditable="true"]');
-            if (editable) {
-                editable.focus();
-                lastFocusedElement = editable;
-                return editable;
-            }
-            
+            if (editable) { editable.focus(); lastFocusedElement = editable; return editable; }
             return null;
         }
 
         // ================================================================
-        // SECTION 23: CONTEXT BUTTON FUNCTIONS
+        // SECTION 21: CONTEXT BUTTON ACTIONS
         // ================================================================
         function formatFocusedC() {
             const el = getFocusedElement();
-            if (!el || !el.classList.contains('code-content')) {
-                alert('Please click inside the code editor first.');
-                return;
-            }
-            
-            const code = el.textContent;
-            const formatted = formatCCode(code);
+            if (!el || !el.classList.contains('code-content')) { alert('Please click inside the code editor first.'); return; }
+            const formatted = formatCCode(el.textContent);
             el.textContent = formatted;
             updateLineNumbersFor(el);
             saveState();
-            
             const status = document.getElementById('editStatus');
             status.textContent = '✅ Code formatted!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         function formatAlgorithm() {
             const el = getFocusedElement();
-            if (!el || !el.classList.contains('algorithm')) {
-                alert('Please click inside the algorithm section first.');
-                return;
-            }
-            
-            const text = el.textContent;
-            const formatted = formatAlgorithm(text);
+            if (!el || !el.classList.contains('algorithm')) { alert('Please click inside the algorithm section first.'); return; }
+            const formatted = formatAlgorithm(el.textContent);
             el.textContent = formatted;
             saveState();
-            
             const status = document.getElementById('editStatus');
             status.textContent = '✅ Algorithm formatted!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         function renderFocusedMarkdown() {
             const el = getFocusedElement();
-            if (!el) {
-                alert('Please click inside a text section first.');
-                return;
-            }
-            
+            if (!el) { alert('Please click inside a text section first.'); return; }
             const text = el.textContent;
             const rendered = text
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
                 .replace(/\n/g, '<br>');
-            
             el.innerHTML = rendered;
             el.classList.add('rendered-markdown');
             el.setAttribute('data-markdown-rendered', 'true');
             saveState();
-            
             const status = document.getElementById('editStatus');
             status.textContent = '✨ Markdown rendered!';
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         function unrenderFocusedMarkdown() {
             const el = getFocusedElement();
-            if (!el) {
-                alert('Please click inside a rendered text section first.');
-                return;
-            }
-            
-            if (!el.classList.contains('rendered-markdown')) {
-                alert('This section is not rendered markdown.');
-                return;
-            }
-            
-            const originalText = el.getAttribute('data-markdown-original');
-            if (originalText) {
-                el.textContent = originalText;
+            if (!el) { alert('Please click inside a rendered text section first.'); return; }
+            if (!el.classList.contains('rendered-markdown')) { alert('This section is not rendered markdown.'); return; }
+            const original = el.getAttribute('data-markdown-original');
+            if (original) {
+                el.textContent = original;
                 el.classList.remove('rendered-markdown');
                 el.removeAttribute('data-markdown-rendered');
                 el.removeAttribute('data-markdown-original');
                 saveState();
-                
                 const status = document.getElementById('editStatus');
                 status.textContent = '↩️ Markdown unrendered!';
-                setTimeout(() => {
-                    status.textContent = editMode ? 'Edit ON' : 'View';
-                }, 1500);
+                setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
             } else {
                 alert('No original markdown text found.');
             }
@@ -2812,24 +2614,17 @@ More content here.`;
 
         function alignText(alignment) {
             const el = getFocusedElement();
-            if (!el) {
-                alert('Please click inside a text section first.');
-                return;
-            }
-            
+            if (!el) { alert('Please click inside a text section first.'); return; }
             el.classList.remove('text-left', 'text-center', 'text-right', 'text-justify');
             el.classList.add('text-' + alignment);
             saveState();
-            
             const status = document.getElementById('editStatus');
             status.textContent = '📐 Aligned ' + alignment;
-            setTimeout(() => {
-                status.textContent = editMode ? 'Edit ON' : 'View';
-            }, 1500);
+            setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 1500);
         }
 
         // ================================================================
-        // SECTION 24: TOOLBAR ZOOM
+        // SECTION 22: TOOLBAR ZOOM
         // ================================================================
         function zoomToolbar(delta) {
             toolbarZoom = Math.max(0.5, Math.min(2.0, toolbarZoom + delta));
@@ -2840,22 +2635,23 @@ More content here.`;
         }
 
         // ================================================================
-        // SECTION 25: TOGGLE EDIT MODE
+        // SECTION 23: EDIT MODE TOGGLE
         // ================================================================
         function toggleEdit() {
             editMode = !editMode;
             const btn = document.getElementById('btnEdit');
             const status = document.getElementById('editStatus');
-            
             if (editMode) {
                 btn.textContent = 'Disable Edit';
                 btn.style.background = '#ef6c00';
                 status.textContent = '✏️ Edit ON';
                 status.style.color = '#81c784';
                 document.getElementById('pageContent').classList.add('edit-mode');
-                
                 document.querySelectorAll('[data-field], .code-content, .io-table td, .io-table th').forEach(el => {
                     el.setAttribute('contenteditable', 'true');
+                });
+                document.querySelectorAll('.page-break-wrapper').forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
                 });
             } else {
                 btn.textContent = 'Enable Edit';
@@ -2863,7 +2659,6 @@ More content here.`;
                 status.textContent = '👁️ View';
                 status.style.color = '#bbb';
                 document.getElementById('pageContent').classList.remove('edit-mode');
-                
                 document.querySelectorAll('[data-field], .code-content, .io-table td, .io-table th').forEach(el => {
                     el.setAttribute('contenteditable', 'false');
                 });
@@ -2872,75 +2667,63 @@ More content here.`;
         }
 
         // ================================================================
-        // SECTION 26: TOGGLE FUNCTIONS
+        // SECTION 24: TOGGLE OPTIONS
         // ================================================================
         function togglePreserveFormat() {
-            const on = document.getElementById('preserveFormat').checked;
-            document.getElementById('pageContent').classList.toggle('preserve-format', on);
+            document.getElementById('pageContent').classList.toggle('preserve-format', document.getElementById('preserveFormat').checked);
             saveAppData();
         }
-
         function toggleCodeWrap() {
-            const on = document.getElementById('wrapCode').checked;
-            document.getElementById('pageContent').classList.toggle('wrap-code', on);
+            document.getElementById('pageContent').classList.toggle('wrap-code', document.getElementById('wrapCode').checked);
             saveAppData();
         }
-
         function toggleBodyWrap() {
-            const on = document.getElementById('wrapBody').checked;
-            document.getElementById('pageContent').classList.toggle('wrap-body', on);
+            document.getElementById('pageContent').classList.toggle('wrap-body', document.getElementById('wrapBody').checked);
             saveAppData();
         }
 
         // ================================================================
-        // SECTION 27: RESET CONTENT
+        // SECTION 25: RESET
         // ================================================================
         function resetContent() {
             if (confirm('Reset to default content? This cannot be undone.')) {
                 localStorage.removeItem(STORAGE_KEY);
+                undoStack = [];
+                redoStack = [];
                 renderAssignment(DEFAULT_MARKDOWN);
                 currentMarkdown = DEFAULT_MARKDOWN;
                 const status = document.getElementById('editStatus');
                 status.textContent = '🔄 Reset!';
-                setTimeout(() => {
-                    status.textContent = editMode ? 'Edit ON' : 'View';
-                }, 2000);
+                setTimeout(() => status.textContent = editMode ? 'Edit ON' : 'View', 2000);
             }
         }
 
         // ================================================================
-        // SECTION 28: APPLY ALL STYLES
+        // SECTION 26: APPLY ALL STYLES
         // ================================================================
         function applyAllStyles() {
             const headingFont = document.getElementById('headingFont')?.value || "'Montserrat', sans-serif";
             const bodyFont = document.getElementById('bodyFont')?.value || "'Merriweather', serif";
             const codeFont = document.getElementById('codeFont')?.value || "'Google Sans Code', monospace";
-            
             changeHeadingFont(headingFont);
             changeBodyFont(bodyFont);
             changeCodeFont(codeFont);
-            
             const overallSize = document.getElementById('overallSize')?.value || "11";
             const headSize = document.getElementById('headSize')?.value || "15.5";
             const bodySize = document.getElementById('bodySize')?.value || "11";
             const codeSize = document.getElementById('codeSize')?.value || "11";
-            
             changeOverallSize(overallSize);
             changeHeadSize(headSize);
             changeBodySize(bodySize);
             changeCodeSize(codeSize);
-            
             updatePageMargins();
-            setTimeout(function() {
+            setTimeout(() => {
                 initGaps();
                 applyIOStylesDirect();
                 updatePrintGaps();
             }, 100);
         }
 
-        // ================================================================
-        // SECTION 29: SAVE SETTINGS
-        // ================================================================
         function saveSettings() {
             saveAppData();
             updatePrintGaps();
@@ -2948,7 +2731,7 @@ More content here.`;
         }
 
         // ================================================================
-        // SECTION 30: DRAG HANDLE
+        // SECTION 27: DRAG HANDLE
         // ================================================================
         let isDragging = false, startX, startY, initialLeft, initialTop;
         const toolbar = document.getElementById('toolbar');
@@ -3018,35 +2801,28 @@ More content here.`;
         });
 
         // ================================================================
-        // SECTION 31: KEYBOARD SHORTCUTS
+        // SECTION 28: KEYBOARD SHORTCUTS
         // ================================================================
         document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
-                e.preventDefault();
-                toggleEdit();
-            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') { e.preventDefault(); toggleEdit(); }
             if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
                 e.preventDefault();
-                if (e.shiftKey) {
-                    redoAction();
-                } else {
-                    undoAction();
-                }
+                if (e.shiftKey) redoAction();
+                else undoAction();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveSettings(); }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
                 e.preventDefault();
-                saveSettings();
+                insertPageBreak();
             }
         });
 
         // ================================================================
-        // SECTION 32: EVENT LISTENERS
+        // SECTION 29: EVENT LISTENERS
         // ================================================================
         document.addEventListener('focusin', function(e) {
             if (e.target && (e.target.matches('[contenteditable="true"]') || e.target.matches('[data-field]'))) {
-                document.querySelectorAll('.editor-active').forEach(el => {
-                    el.classList.remove('editor-active');
-                });
+                document.querySelectorAll('.editor-active').forEach(el => el.classList.remove('editor-active'));
                 e.target.classList.add('editor-active');
                 lastFocusedElement = e.target;
                 updateContext(e.target);
@@ -3055,18 +2831,14 @@ More content here.`;
 
         document.addEventListener('mousedown', function(e) {
             const target = e.target;
-            const isEditable = target.matches('[contenteditable="true"]') || 
-                              target.matches('[data-field]') ||
-                              target.closest('[contenteditable="true"]') ||
-                              target.closest('[data-field]');
-            
+            const isEditable = target.matches('[contenteditable="true"]') ||
+                               target.matches('[data-field]') ||
+                               target.closest('[contenteditable="true"]') ||
+                               target.closest('[data-field]');
             const isToolbar = target.closest('.toolbar');
-            
             if (!isEditable && !isToolbar) {
                 updateContext(null);
-                document.querySelectorAll('.editor-active').forEach(el => {
-                    el.classList.remove('editor-active');
-                });
+                document.querySelectorAll('.editor-active').forEach(el => el.classList.remove('editor-active'));
                 lastFocusedElement = null;
             }
         });
@@ -3076,43 +2848,32 @@ More content here.`;
                 updateLineNumbersFor(e.target);
             }
             if (e.target && (e.target.matches('[contenteditable="true"]') || e.target.matches('[data-field]'))) {
-                saveAppData();
+                saveState();
             }
         });
 
         // ================================================================
-        // SECTION 33: INITIALIZATION
+        // SECTION 30: INIT
         // ================================================================
         function init() {
             populateFontSelectors();
-            
             const hasSavedData = loadAppData();
-            
             if (!hasSavedData) {
                 renderAssignment(DEFAULT_MARKDOWN);
             } else {
-                setTimeout(function() {
+                const currentContent = document.getElementById('pageContent').innerHTML;
+                if (undoStack.length === 0 && currentContent) {
+                    undoStack = [currentContent];
+                }
+                setTimeout(() => {
                     applyAllStyles();
                     applyIOStylesDirect();
                     initGaps();
                     updatePrintGaps();
                 }, 200);
             }
-            
-            console.log('📝 Assignment Editor loaded!');
-            console.log('💡 Features:');
-            console.log('  - 💾 Auto-saves all changes');
-            console.log('  - 📂 Restores last session on reload');
-            console.log('  - 📐 Overall, Head, Body, Code, and Specific sizes');
-            console.log('  - 🖨️ Margins apply to both screen and print');
-            console.log('  - 🔄 Undo/Redo (Ctrl+Z / Ctrl+Shift+Z)');
-            console.log('  - 💾 Save settings (Ctrl+S)');
-            console.log('  - 📄 Import/Export Markdown');
-            console.log('  - 🎯 Context-aware toolbar');
-            console.log('  - 📊 I/O Table has separate Input/Output styling');
-            console.log('  - 🔤 I/O Input/Output separate font controls');
-            console.log('  - 📏 One slider with 3 modes: Section, Head-Text, Paragraph gaps');
-            console.log('  - 🖨️ Gaps work on both screen and print');
+            console.log('📝 Assignment Editor loaded (clean page break system)');
+            console.log('💡 Page breaks: only from <page-break> in markdown or via button (Ctrl+Shift+P)');
         }
 
         window.addEventListener('beforeunload', function() {
