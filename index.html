@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASSIGNMENT TEMPLATE</title>
+    <title>ASSIGNMENT 1</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Roboto:wght@400;500;700;900&family=Open+Sans:wght@400;600;700;800&family=Lato:wght@400;700;900&family=Montserrat:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&family=Source+Sans+3:wght@400;600;700;900&family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@400;600;700;800;900&family=Merriweather:wght@400;700;900&family=Playfair+Display:wght@400;700;900&family=Oswald:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;500;600;700;800;900&family=PT+Serif:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Roboto:wght@400;500;700;900&family=Open+Sans:wght@400;600;700;800&family=Lato:wght@400;700;900&family=Montserrat:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&family=Source+Sans+3:wght@400;600;700;900&family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@400;600;700;800;900&family=Merriweather:wght@400;700;900&family=Playfair+Display:wght@400;700;900&family=Oswald:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700;800;900&family=Work+Sans:wght@400;500;600;700;800;900&family=PT+Serif:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Crimson+Text:wght@400;600;700&family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Ubuntu+Mono:wght@400;700&family=Roboto+Mono:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ========== PRINT SETTINGS ========== */
+        /* ========== PRINT SETTINGS - DYNAMIC MARGINS ========== */
         @page {
             size: A4 portrait;
-            margin: 12mm 14mm 12mm 14mm;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body { height: auto; }
+        html, body { 
+            height: auto; 
+            background: #e8e8e8;
+        }
 
         body {
             font-family: "Roboto", "Aptos", "Calibri", Arial, sans-serif;
             font-size: 11pt;
             line-height: 1.35;
             color: #000;
-            background: #e8e8e8;
             padding: 15px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -34,14 +35,21 @@
 
         .page {
             width: 210mm;
-            max-height: 297mm;
-            margin: 0 auto;
+            min-height: 297mm;
+            margin: 0 auto 20px auto;
             background: #fff;
             padding: 11mm 13mm;
             box-shadow: 0 0 12px rgba(0,0,0,0.18);
             position: relative;
             box-sizing: border-box;
-            overflow: hidden;
+            transition: padding 0.3s;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        .page:last-child {
+            margin-bottom: 0;
+            page-break-after: auto;
+            break-after: auto;
         }
 
         /* ========== TOOLBAR ========== */
@@ -49,72 +57,303 @@
             position: fixed;
             top: 12px;
             right: 12px;
-            width: 620px;                 /* explicit width required for horizontal resize */
-            background: #222;
+            background: #1a1a1a;
             color: #fff;
-            padding: 8px 14px 8px 8px;
-            border-radius: 8px;
+            padding: 10px 12px;
+            border-radius: 10px;
             z-index: 9999;
             display: flex;
+            flex-direction: column;
             gap: 6px;
-            align-items: center;
-            flex-wrap: wrap;
-            align-content: flex-start;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             font-family: "Roboto", Arial, sans-serif;
-            font-size: 11.5px;
-            min-width: 260px;
-            min-height: 48px;
+            font-size: 11px;
+            min-width: 200px;
             max-width: 95vw;
             max-height: 85vh;
             overflow: auto;
-            resize: both;                 /* both directions now work reliably */
+            resize: both;
             user-select: none;
             box-sizing: border-box;
+            border: 2px solid #333;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .toolbar.context-active {
+            border-color: #4caf50;
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
         }
         .toolbar::-webkit-resizer {
-            background: linear-gradient(135deg, transparent 60%, #888 60%);
+            background: linear-gradient(135deg, transparent 60%, #666 60%);
             width: 14px;
             height: 14px;
         }
 
         .drag-handle {
-            width: 18px; height: 28px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            gap: 3px; cursor: grab; margin-right: 2px; border-radius: 3px; background: #333; flex-shrink: 0;
+            width: 100%;
+            height: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            cursor: grab;
+            border-radius: 4px;
+            background: #2a2a2a;
+            flex-shrink: 0;
+            margin-bottom: 2px;
         }
-        .drag-handle:active { cursor: grabbing; background: #444; }
-        .drag-handle span { display: block; width: 12px; height: 2px; background: #999; border-radius: 1px; }
+        .drag-handle:active { cursor: grabbing; background: #333; }
+        .drag-handle span { display: block; width: 20px; height: 2px; background: #555; border-radius: 1px; }
         .toolbar.dragging { opacity: 0.92; box-shadow: 0 8px 24px rgba(0,0,0,0.45); }
 
-        .toolbar button {
-            background: #2e7d32; color: white; border: none; padding: 6px 10px;
-            border-radius: 4px; cursor: pointer; font-size: 11.5px; font-weight: 600;
-            flex-shrink: 0;                 /* prevent buttons from shrinking too much */
-            white-space: nowrap;
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+            padding: 2px 0;
         }
-        .toolbar button:hover { background: #1b5e20; }
+        .toolbar-row-label {
+            font-size: 8px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            min-width: 45px;
+            flex-shrink: 0;
+        }
+
+        .toolbar button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+            white-space: nowrap;
+            transition: all 0.2s;
+            height: 24px;
+        }
+        .toolbar button:hover { background: #1b5e20; transform: scale(1.02); }
         .toolbar button.secondary { background: #1565c0; }
         .toolbar button.secondary:hover { background: #0d47a1; }
         .toolbar button.danger { background: #c62828; }
         .toolbar button.danger:hover { background: #b71c1c; }
-        .toolbar .status { font-size: 11px; color: #bbb; margin-right: 2px; }
+        .toolbar button.context-btn {
+            background: #6a1b9a;
+            display: none;
+        }
+        .toolbar button.context-btn.active { display: inline-block; }
+        .toolbar button.context-btn:hover { background: #4a148c; }
+        .toolbar .status {
+            font-size: 9px;
+            color: #888;
+            margin-right: 2px;
+            padding: 2px 6px;
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+        .toolbar .context-hint {
+            font-size: 8px;
+            color: #4caf50;
+            padding: 2px 6px;
+            background: #1e3a1e;
+            border-radius: 3px;
+            display: none;
+            font-weight: 500;
+        }
+        .toolbar .context-hint.active { display: inline-block; }
 
         .ctrl-group {
-            display: flex; align-items: center; gap: 4px;
-            background: #333; padding: 3px 7px; border-radius: 4px; border: 1px solid #555;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: #2a2a2a;
+            padding: 2px 5px;
+            border-radius: 4px;
+            border: 1px solid #444;
             flex-shrink: 0;
         }
-        .ctrl-group label { font-size: 10px; color: #ccc; white-space: nowrap; }
+        .ctrl-group label { font-size: 8px; color: #aaa; white-space: nowrap; }
         .ctrl-group select {
-            background: #444; color: #fff; border: 1px solid #666; border-radius: 3px;
-            padding: 2px 4px; font-size: 11px; cursor: pointer; max-width: 115px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 3px;
+            padding: 1px 3px;
+            font-size: 9px;
+            cursor: pointer;
+            max-width: 90px;
+            height: 20px;
         }
         .ctrl-group select:focus { outline: 1px solid #4caf50; }
 
         .ctrl-group input[type="checkbox"] {
-            width: 14px; height: 14px; cursor: pointer; accent-color: #4caf50;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+            accent-color: #4caf50;
+            margin: 0;
         }
+
+        .ctrl-group input[type="number"] {
+            width: 32px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 3px;
+            padding: 1px 2px;
+            font-size: 9px;
+            height: 18px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: #2a2a2a;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+        .zoom-controls button {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 0 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            height: 18px;
+            min-width: 18px;
+        }
+        .zoom-controls button:hover { background: #666; }
+        .zoom-controls .zoom-level {
+            font-size: 9px;
+            color: #ccc;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .weight-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: #2a2a2a;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+        .weight-controls button {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 0 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 8px;
+            font-weight: 600;
+            height: 18px;
+        }
+        .weight-controls button:hover { background: #666; }
+        .weight-controls button.active-weight { background: #4caf50; }
+
+        .gap-control {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: #2a2a2a;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+        .gap-control input {
+            width: 24px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 3px;
+            padding: 1px 2px;
+            font-size: 9px;
+            height: 18px;
+        }
+        .gap-control button {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 0 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 9px;
+            height: 18px;
+        }
+        .gap-control button:hover { background: #666; }
+
+        /* ========== GAP SLIDER STYLES ========== */
+        .ctrl-group input[type="radio"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .ctrl-group input[type="radio"]:checked {
+            border-color: #4caf50;
+            background: #4caf50;
+            box-shadow: inset 0 0 0 2px #1a1a1a;
+        }
+
+        .ctrl-group input[type="radio"]:hover {
+            border-color: #888;
+        }
+
+        .ctrl-group input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #444;
+            height: 3px;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            padding: 0;
+            margin: 0 4px;
+        }
+
+        .ctrl-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+            border: none;
+        }
+
+        .ctrl-group input[type="range"]::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+            border: none;
+        }
+
+        .ctrl-group input[type="range"].mode-section::-webkit-slider-thumb { background: #1565c0 !important; }
+        .ctrl-group input[type="range"].mode-heading::-webkit-slider-thumb { background: #6a1b9a !important; }
+        .ctrl-group input[type="range"].mode-paragraph::-webkit-slider-thumb { background: #2e7d32 !important; }
+        .ctrl-group input[type="range"].mode-section::-moz-range-thumb { background: #1565c0 !important; }
+        .ctrl-group input[type="range"].mode-heading::-moz-range-thumb { background: #6a1b9a !important; }
+        .ctrl-group input[type="range"].mode-paragraph::-moz-range-thumb { background: #2e7d32 !important; }
 
         /* ========== EDIT MODE ========== */
         [contenteditable="true"] {
@@ -131,131 +370,138 @@
         }
         .edit-mode [contenteditable="true"] { outline: 1px dashed #bbb; }
 
-        /* ========== TYPOGRAPHY ========== */
-        .header, .section-title {
-            font-family: "Montserrat", "Aptos Black", "Arial Black", Arial, sans-serif;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-        }
-
-        .problem-statement, .algorithm, .discussion, .io-table td {
-            font-family: "Merriweather", "Amasis MT Pro", "Palatino Linotype", "Times New Roman", serif;
-        }
-
-        /* Code → Google Sans Code */
-        .code-content, .line-numbers {
-            font-family: "Google Sans Code", Consolas, "Cascadia Code", "Courier New", monospace;
-            font-optical-sizing: auto;
-            font-weight: 400;
-            font-style: normal;
-            font-variation-settings: "MONO" 1;
-            font-size: 11pt;
-            line-height: 1.35;
-        }
-
-        /* ========== MARKDOWN HTML OUTPUT ========== */
-        .markdown-html {
-            white-space: normal !important;
-        }
-        .markdown-html h1,
-        .markdown-html h2,
-        .markdown-html h3,
-        .markdown-html h4,
-        .markdown-html h5,
-        .markdown-html h6 {
-            margin: 0.35em 0 0.2em;
-            line-height: 1.2;
-        }
-        .markdown-html p { margin: 0.25em 0 0.45em; }
-        .markdown-html ul,
-        .markdown-html ol { margin: 0.25em 0 0.5em 1.4em; }
-        .markdown-html li { margin: 0.1em 0; }
-        .markdown-html blockquote {
-            margin: 0.4em 0;
-            padding: 0.15em 0.8em;
-            border-left: 3px solid #777;
-            color: #444;
-        }
-        .markdown-html code {
-            font-family: "Google Sans Code", Consolas, monospace;
-            background: #f0f0f0;
-            padding: 0.05em 0.25em;
-            border-radius: 3px;
-        }
-        .markdown-html pre {
-            margin: 0.4em 0;
-            padding: 0.55em 0.7em;
-            overflow-x: auto;
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            white-space: pre;
-        }
-        .markdown-html pre code {
-            padding: 0;
-            background: transparent;
-        }
-        .markdown-html table {
-            border-collapse: collapse;
-            margin: 0.4em 0;
-        }
-        .markdown-html th,
-        .markdown-html td {
-            border: 1px solid #aaa;
-            padding: 3px 6px;
-        }
-        .markdown-html img {
-            max-width: 100%;
-            height: auto;
-        }
-        .md-rendered {
-            white-space: normal !important;
-        }
-        .editor-active {
-            outline: 2px solid #1565c0 !important;
-            background: #eef5ff !important;
-        }
-
-        /* Temporary editor focus cue must never appear in printed output. */
-        @media print {
-            .editor-active {
-                outline: none !important;
-                background: transparent !important;
-            }
-        }
-
-        /* ========== HEADER ========== */
+        /* ========== TYPOGRAPHY BASE ========== */
         .header {
             text-align: center;
-            font-size: 15.5pt;
             text-transform: uppercase;
             margin-bottom: 4px;
             line-height: 1.2;
+            font-weight: 800;
         }
-        .divider { border: none; border-top: 1.6px solid #111; margin: 4px 0 9px 0; }
 
-        /* ========== SECTIONS ========== */
         .section-title {
-            font-size: 11pt;
             text-transform: uppercase;
-            margin-top: 9px;
-            margin-bottom: 3px;
+            margin-top: 12px;
+            margin-bottom: 0 !important;
             line-height: 1.25;
+            font-weight: 700;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 6px;
+        }
+
+        .section-title + .problem-statement,
+        .section-title + .algorithm,
+        .section-title + .code-container,
+        .section-title + .io-table,
+        .section-title + .discussion {
+            margin-top: 0px !important;
         }
 
         .problem-statement {
-            font-size: 11pt;
-            margin-bottom: 2px;
+            margin-bottom: 0px;
             line-height: 1.35;
+            font-weight: 400;
         }
 
-        /* Critical for format preservation */
         .algorithm {
-            font-size: 10.5pt;
             line-height: 1.38;
             white-space: pre-wrap !important;
-            margin-bottom: 2px;
+            margin-bottom: 0px;
+            padding: 4px 0;
+            background: transparent;
+            border: none;
+            font-weight: 400;
         }
+
+        .code-content, .line-numbers {
+            font-family: "Google Sans Code", Consolas, "Courier New", monospace !important;
+            font-weight: 400;
+        }
+
+        .discussion {
+            line-height: 1.38;
+            text-align: justify;
+            font-weight: 400;
+        }
+        .discussion p { 
+            margin-top: 2px; 
+            margin-bottom: 0 !important;
+        }
+        .discussion p:first-child { margin-top: 0 !important; }
+        .discussion p + p { margin-top: 2px; }
+
+        .problem-statement p { 
+            margin-top: 2px; 
+            margin-bottom: 0 !important;
+        }
+        .problem-statement p:first-child { margin-top: 0 !important; }
+        .problem-statement p + p { margin-top: 2px; }
+
+        .io-table td {
+            font-weight: 400;
+            word-wrap: break-word;
+            white-space: pre-wrap !important;
+        }
+
+        /* ========== I/O TABLE CUSTOM STYLES ========== */
+        .io-table .input-cell {
+            
+            font-weight: 500 !important;
+           
+            line-height: 1.0 !important;
+            padding: 2px 6px !important;
+            white-space: pre-wrap !important;
+        }
+
+        .io-table .output-cell {
+            
+            font-weight: 500 !important;
+            line-height: 1.0 !important;
+            padding: 2px 6px !important;
+            white-space: pre-wrap !important;
+        }
+
+        .io-table .input-cell:focus {
+            background: #e3ecf5 !important;
+        }
+
+        .io-table .output-cell:focus {
+            background: #f0f0e8 !important;
+        }
+
+        /* Remove extra spacing from <br> and <p> inside I/O cells */
+        .io-table .input-cell br,
+        .io-table .output-cell br {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 0 !important;
+            height: 0 !important;
+        }
+
+        .io-table .input-cell p,
+        .io-table .output-cell p {
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.0 !important;
+        }
+
+        .io-table .input-cell *,
+        .io-table .output-cell * {
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.0 !important;
+        }
+
+        /* ========== WEIGHT CLASSES ========== */
+        .weight-thin { font-weight: 100 !important; }
+        .weight-light { font-weight: 300 !important; }
+        .weight-regular { font-weight: 400 !important; }
+        .weight-medium { font-weight: 500 !important; }
+        .weight-bold { font-weight: 700 !important; }
+        .weight-black { font-weight: 900 !important; }
 
         /* ========== CODE BLOCK ========== */
         .code-container {
@@ -302,12 +548,59 @@
             tab-size: 4;
             background: #fafafa;
             color: #111;
-            /* Prevent browser from turning content into paragraphs */
             display: block;
+            word-wrap: break-word;
         }
         .code-content:focus { outline: none; background: #fffef5; }
 
-        /* Force no paragraph wrapping when preserve is on */
+        /* ========== TABLE - SUPPORTS MULTI-LINE ========== */
+        .io-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5px 0 8px 0;
+            table-layout: fixed;
+        }
+
+        .io-table,
+        .io-table th,
+        .io-table td {
+            border: 0.5px solid #222 !important;
+        }
+
+        .io-table th {
+            background: #f3f3f3;
+            padding: 4px 8px;
+            text-align: center;
+            font-weight: 700;
+            width: 50%;
+        }
+
+        .io-table td {
+            padding: 4px 8px;
+            vertical-align: top;
+            line-height: 1.2;
+            background: #fafafa;
+            min-height: 20px;
+            width: 50%;
+            word-wrap: break-word;
+            white-space: pre-wrap !important;
+        }
+
+        .row-delete-btn {
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            padding: 1px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .row-delete-btn:hover {
+            background: #b71c1c;
+        }
+
+        /* ========== PRESERVE FORMAT ========== */
         .preserve-format .code-content,
         .preserve-format .algorithm,
         .preserve-format .io-input {
@@ -320,7 +613,6 @@
             white-space: pre-wrap !important;
         }
 
-        /* Word-wrap toggles */
         .wrap-code .code-content {
             white-space: pre-wrap !important;
             word-break: break-word !important;
@@ -336,50 +628,96 @@
             overflow-wrap: break-word !important;
         }
 
-        /* ========== TABLE ========== */
-        .io-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 5px 0 8px 0;
-            font-size: 10.5pt;
-        }
-        .io-table th {
-            background: #f3f3f3;
-            border: 1.3px solid #222;
-            padding: 4px 8px;
-            text-align: center;
-            font-family: "Montserrat", "Roboto", Arial, sans-serif;
-            font-weight: 700;
-            font-size: 10.5pt;
-        }
-        .io-table td {
-            border: 1.3px solid #222;
-            padding: 6px 10px;
-            vertical-align: top;
-            line-height: 1.35;
-        }
-        .io-table td:first-child { width: 58%; }
-        .io-input { white-space: pre-line; }
+        /* ========== TEXT ALIGNMENT ========== */
+        .text-left { text-align: left !important; }
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .text-justify { text-align: justify !important; }
 
-        /* ========== DISCUSSION ========== */
-        .discussion {
-            font-size: 10.5pt;
-            line-height: 1.38;
-            text-align: justify;
+        /* ========== RENDERED MARKDOWN INDICATOR ========== */
+        .rendered-markdown {
+            background: #faf8f0 !important;
+            padding-left: 8px !important;
         }
-        .discussion p { margin-bottom: 5px; }
 
         /* ========== PRINT ========== */
         @media print {
-            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            html, body { 
+                background: white !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                height: auto !important;
+                min-height: auto !important;
+            }
             .toolbar { display: none !important; }
             .page {
-                width: 100% !important; height: auto !important; max-height: none !important;
-                margin: 0 !important; padding: 0 !important; box-shadow: none !important; overflow: visible !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: auto !important;
+                max-height: none !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                overflow: visible !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                position: relative !important;
             }
-            [contenteditable="true"] { outline: none !important; background: transparent !important; }
+            .page:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+            [contenteditable="true"] { 
+                outline: none !important; 
+                background: transparent !important; 
+            }
             .code-container, .io-table, .algorithm, .discussion, .header, .section-title {
-                page-break-inside: avoid; break-inside: avoid;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .row-delete-btn, .col-actions {
+                display: none !important;
+            }
+            
+            /* Thin borders in print */
+            .io-table,
+            .io-table th,
+            .io-table td {
+                border: 0.5px solid #222 !important;
+            }
+            
+          
+            
+            /* Remove I/O backgrounds in print */
+            .io-table .input-cell {
+                background: transparent !important;
+            }
+            .io-table .output-cell {
+                background: transparent !important;
+            }
+            
+            /* Print gap styles - will be overridden by JavaScript */
+            .section-title:not(:first-of-type) {
+                margin-top: 12px !important;
+            }
+            .section-title:first-of-type {
+                margin-top: 6px !important;
+            }
+            .section-title + .problem-statement,
+            .section-title + .algorithm,
+            .section-title + .code-container,
+            .section-title + .io-table,
+            .section-title + .discussion {
+                margin-top: 0px !important;
+            }
+            .discussion p,
+            .problem-statement p {
+                margin-top: 2px !important;
+            }
+            .discussion p + p,
+            .problem-statement p + p {
+                margin-top: 2px !important;
             }
         }
     </style>
@@ -387,301 +725,2234 @@
 <body>
     <!-- Toolbar -->
     <div class="toolbar" id="toolbar">
-        <div class="drag-handle" id="dragHandle" title="Drag to move">
+        <div class="drag-handle" id="dragHandle">
             <span></span><span></span><span></span>
         </div>
-        <span class="status" id="editStatus">View Mode</span>
-        <button id="btnEdit" onclick="toggleEdit()">Enable Edit</button>
-        <button class="secondary" onclick="window.print()">Print / PDF</button>
-        <button class="secondary" onclick="formatFocusedC()" title="Format C code in the focused source editor">Format C</button>
-        <button class="secondary" onclick="renderFocusedMarkdown()" title="Convert Markdown in the focused input area to HTML">MD → HTML</button>
-        <button class="secondary" onclick="renderAllMarkdown()" title="Convert Markdown in all editable text areas to HTML">Render All MD</button>
-
-        <!-- Size -->
-        <div class="ctrl-group">
-            <label>Size</label>
-            <select id="bodyFontSize" onchange="changeBodySize(this.value); saveSettings();">
-                <option value="10">10</option>
-                <option value="10.5">10.5</option>
-                <option value="11" selected>11</option>
-                <option value="11.5">11.5</option>
-                <option value="12">12</option>
-                <option value="12.5">12.5</option>
-                <option value="13">13</option>
-            </select>
-            <label>Code</label>
-            <select id="codeFontSize" onchange="changeCodeSize(this.value); saveSettings();">
-                <option value="9">9</option>
-                <option value="9.5">9.5</option>
-                <option value="10">10</option>
-                <option value="10.5">10.5</option>
-                <option value="11" selected>11</option>
-                <option value="11.5">11.5</option>
-                <option value="12">12</option>
-            </select>
+        
+        <!-- Row 1: Status & Basic Controls -->
+        <div class="toolbar-row">
+            <span class="status" id="editStatus">View</span>
+            <span class="context-hint" id="contextHint">Focus: <span id="contextName">None</span></span>
+            <button id="btnEdit" onclick="toggleEdit()">Enable Edit</button>
+            <button class="secondary" onclick="window.print()">Print</button>
+            <button class="secondary" onclick="downloadTemplate()">Template</button>
+            <button class="secondary" onclick="importMarkdown()">Import</button>
         </div>
-
-        <!-- Fonts -->
-        <div class="ctrl-group">
-            <label>Head</label>
-            <select id="headingFont" onchange="changeHeadingFont(this.value); saveSettings();">
-                <option value="'Montserrat', sans-serif" selected>Montserrat</option>
-                <option value="'Roboto', sans-serif">Roboto</option>
-                <option value="'Open Sans', sans-serif">Open Sans</option>
-                <option value="'Lato', sans-serif">Lato</option>
-                <option value="'Poppins', sans-serif">Poppins</option>
-                <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
-                <option value="'Nunito', sans-serif">Nunito</option>
-                <option value="'Raleway', sans-serif">Raleway</option>
-                <option value="'Oswald', sans-serif">Oswald</option>
-                <option value="'Ubuntu', sans-serif">Ubuntu</option>
-                <option value="'Inter', sans-serif">Inter</option>
-                <option value="'Noto Sans', sans-serif">Noto Sans</option>
-                <option value="'Work Sans', sans-serif">Work Sans</option>
-                <option value="'Playfair Display', serif">Playfair Display</option>
-                <option value="'Merriweather', serif">Merriweather</option>
-            </select>
-            <label>Body</label>
-            <select id="bodyFont" onchange="changeBodyFont(this.value); saveSettings();">
-                <option value="'Merriweather', serif" selected>Merriweather</option>
-                <option value="'PT Serif', serif">PT Serif</option>
-                <option value="'Libre Baskerville', serif">Libre Baskerville</option>
-                <option value="'Crimson Text', serif">Crimson Text</option>
-                <option value="'Playfair Display', serif">Playfair Display</option>
-                <option value="'Roboto', sans-serif">Roboto</option>
-                <option value="'Open Sans', sans-serif">Open Sans</option>
-                <option value="'Lato', sans-serif">Lato</option>
-                <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
-                <option value="'Nunito', sans-serif">Nunito</option>
-                <option value="'Inter', sans-serif">Inter</option>
-                <option value="'Noto Sans', sans-serif">Noto Sans</option>
-                <option value="'Work Sans', sans-serif">Work Sans</option>
-                <option value="'Poppins', sans-serif">Poppins</option>
-                <option value="'Raleway', sans-serif">Raleway</option>
-            </select>
-            <label>Out</label>
-            <select id="outputFont" onchange="changeOutputFont(this.value); saveSettings();">
-                <option value="'Merriweather', serif" selected>Merriweather</option>
-                <option value="'PT Serif', serif">PT Serif</option>
-                <option value="'Libre Baskerville', serif">Libre Baskerville</option>
-                <option value="'Crimson Text', serif">Crimson Text</option>
-                <option value="'Roboto', sans-serif">Roboto</option>
-                <option value="'Open Sans', sans-serif">Open Sans</option>
-                <option value="'Lato', sans-serif">Lato</option>
-                <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
-                <option value="'Inter', sans-serif">Inter</option>
-                <option value="'Noto Sans', sans-serif">Noto Sans</option>
-                <option value="'Work Sans', sans-serif">Work Sans</option>
-                <option value="'Nunito', sans-serif">Nunito</option>
-                <option value="'Poppins', sans-serif">Poppins</option>
-                <option value="'Montserrat', sans-serif">Montserrat</option>
-                <option value="'Ubuntu', sans-serif">Ubuntu</option>
-            </select>
+        
+        <!-- Row 2: Undo/Redo & Format -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Actions</span>
+            <button class="secondary" onclick="undoAction()">Undo</button>
+            <button class="secondary" onclick="redoAction()">Redo</button>
+            <button class="context-btn" id="ctxFormatC" onclick="formatFocusedC()">Format C</button>
+            <button class="context-btn" id="ctxFormatAlgo" onclick="formatAlgorithm()">Format Algo</button>
+            <button class="context-btn" id="ctxRenderMD" onclick="renderFocusedMarkdown()">Render MD</button>
+            <button class="context-btn" id="ctxUnrenderMD" onclick="unrenderFocusedMarkdown()" style="background:#c62828;">Unrender MD</button>
         </div>
-
-        <!-- Preserve + Word Wrap -->
-        <div class="ctrl-group">
-            <input type="checkbox" id="preserveFormat" checked onchange="togglePreserveFormat(); saveSettings();" title="Keep original line breaks and spacing">
-            <label for="preserveFormat" title="Keep original line breaks and spacing">Preserve</label>
+        
+        <!-- Row 3: Table Controls -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Table</span>
+            <button class="context-btn" id="ctxAddRow" onclick="addTableRow()">+Row</button>
+            <button class="context-btn" id="ctxDeleteRow" onclick="deleteTableRow()">-Row</button>
+            <button class="context-btn" id="ctxAddCol" onclick="addTableColumn()">+Col</button>
+            <button class="context-btn" id="ctxDeleteCol" onclick="deleteTableColumn()">-Col</button>
         </div>
-        <div class="ctrl-group">
-            <input type="checkbox" id="wrapCode" onchange="toggleCodeWrap(); saveSettings();" title="Wrap long lines in code block">
-            <label for="wrapCode" title="Wrap long lines in code block">Wrap Code</label>
-            <input type="checkbox" id="wrapBody" onchange="toggleBodyWrap(); saveSettings();" title="Wrap long lines in body text">
-            <label for="wrapBody" title="Wrap long lines in body text">Wrap Body</label>
+        
+        <!-- Row 4: Alignment & Weight -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Style</span>
+            <button class="context-btn" id="ctxAlignLeft" onclick="alignText('left')">L</button>
+            <button class="context-btn" id="ctxAlignCenter" onclick="alignText('center')">C</button>
+            <button class="context-btn" id="ctxAlignRight" onclick="alignText('right')">R</button>
+            <button class="context-btn" id="ctxAlignJustify" onclick="alignText('justify')">J</button>
+            <div class="weight-controls">
+                <button onclick="applyWeight('100')">Thin</button>
+                <button onclick="applyWeight('300')">Light</button>
+                <button onclick="applyWeight('400')" class="active-weight">Reg</button>
+                <button onclick="applyWeight('500')">Med</button>
+                <button onclick="applyWeight('700')">Bold</button>
+                <button onclick="applyWeight('900')">Black</button>
+            </div>
         </div>
-
-        <button class="secondary" onclick="saveSettings(); alert('Settings saved!');" title="Save current fonts, sizes and options">Save</button>
-        <button class="secondary" onclick="addNewSection()">+ New</button>
-        <button class="danger" onclick="resetContent()">Reset</button>
+        
+        <!-- Row 5: Fonts -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Fonts</span>
+            <div class="ctrl-group">
+                <label>Head</label>
+                <select id="headingFont" onchange="changeHeadingFont(this.value); saveSettings();">
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                    <option value="'Lato', sans-serif">Lato</option>
+                    <option value="'Poppins', sans-serif">Poppins</option>
+                    <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+                    <option value="'Nunito', sans-serif">Nunito</option>
+                    <option value="'Raleway', sans-serif">Raleway</option>
+                    <option value="'Oswald', sans-serif">Oswald</option>
+                    <option value="'Ubuntu', sans-serif">Ubuntu</option>
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Noto Sans', sans-serif">Noto Sans</option>
+                    <option value="'Work Sans', sans-serif">Work Sans</option>
+                    <option value="'Playfair Display', serif">Playfair</option>
+                    <option value="'Merriweather', serif">Merriweather</option>
+                    <option value="'PT Serif', serif">PT Serif</option>
+                    <option value="'Libre Baskerville', serif">Libre</option>
+                    <option value="'Crimson Text', serif">Crimson</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label>Body</label>
+                <select id="bodyFont" onchange="changeBodyFont(this.value); saveSettings();">
+                    <option value="'Merriweather', serif">Merriweather</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                    <option value="'Lato', sans-serif">Lato</option>
+                    <option value="'Poppins', sans-serif">Poppins</option>
+                    <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+                    <option value="'Nunito', sans-serif">Nunito</option>
+                    <option value="'Raleway', sans-serif">Raleway</option>
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Noto Sans', sans-serif">Noto Sans</option>
+                    <option value="'Work Sans', sans-serif">Work Sans</option>
+                    <option value="'Playfair Display', serif">Playfair</option>
+                    <option value="'PT Serif', serif">PT Serif</option>
+                    <option value="'Libre Baskerville', serif">Libre</option>
+                    <option value="'Crimson Text', serif">Crimson</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Ubuntu', sans-serif">Ubuntu</option>
+                    <option value="'Oswald', sans-serif">Oswald</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label>Code</label>
+                <select id="codeFont" onchange="changeCodeFont(this.value); saveSettings();">
+                    <option value="'Google Sans Code', monospace">Google Sans Code</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                    <option value="'Consolas', monospace">Consolas</option>
+                    <option value="'Monaco', monospace">Monaco</option>
+                    <option value="'Menlo', monospace">Menlo</option>
+                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Row 6: Sizes -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Sizes</span>
+            <div class="ctrl-group">
+                <label>Overall</label>
+                <select id="overallSize" onchange="changeOverallSize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5">10.5</option>
+                    <option value="11" selected>11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                    <option value="13.5">13.5</option>
+                    <option value="14">14</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label>Head</label>
+                <select id="headSize" onchange="changeHeadSize(this.value); saveSettings();">
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="15.5" selected>15.5</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label>Body</label>
+                <select id="bodySize" onchange="changeBodySize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5">10.5</option>
+                    <option value="11" selected>11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                    <option value="13.5">13.5</option>
+                    <option value="14">14</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label>Code</label>
+                <select id="codeSize" onchange="changeCodeSize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5">10.5</option>
+                    <option value="11" selected>11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                </select>
+            </div>
+            <!-- Specific Section Size -->
+            <div class="ctrl-group" id="specificSizeGroup" style="display:none;border-color:#6a1b9a;">
+                <label style="color:#6a1b9a;">Specific</label>
+                <select id="specificSize" onchange="changeSpecificSize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5">10.5</option>
+                    <option value="11" selected>11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                    <option value="13.5">13.5</option>
+                    <option value="14">14</option>
+                    <option value="14.5">14.5</option>
+                    <option value="15">15</option>
+                </select>
+            </div>
+            <!-- I/O Table Size Controls -->
+            <div class="ctrl-group" id="ioSizeGroup" style="display:none;border-color:#1565c0;">
+                <label style="color:#1565c0;">In</label>
+                <select id="ioInputSize" onchange="changeIOInputSize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5" selected>10.5</option>
+                    <option value="11">11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                </select>
+                <label style="color:#2e7d32;">Out</label>
+                <select id="ioOutputSize" onchange="changeIOOutputSize(this.value); saveSettings();">
+                    <option value="8">8</option>
+                    <option value="8.5">8.5</option>
+                    <option value="9">9</option>
+                    <option value="9.5">9.5</option>
+                    <option value="10">10</option>
+                    <option value="10.5" selected>10.5</option>
+                    <option value="11">11</option>
+                    <option value="11.5">11.5</option>
+                    <option value="12">12</option>
+                    <option value="12.5">12.5</option>
+                    <option value="13">13</option>
+                </select>
+            </div>
+            <!-- I/O Font Style Controls -->
+            <div class="ctrl-group" id="ioFontGroup" style="display:none;border-color:#6a1b9a;">
+                <label style="color:#1565c0;">In Font</label>
+                <select id="ioInputFont" onchange="changeIOInputFont(this.value); saveSettings();">
+                    <option value="'Fira Code', monospace">Fira Code</option>
+                    <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                    <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                    <option value="'Courier Prime', monospace">Courier Prime</option>
+                    <option value="'Google Sans Code', monospace">Google Sans Code</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                    <option value="'Consolas', monospace">Consolas</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                    <option value="'Lato', sans-serif">Lato</option>
+                    <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+                    <option value="'Nunito', sans-serif">Nunito</option>
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Merriweather', serif">Merriweather</option>
+                </select>
+                <label style="color:#2e7d32;">Out Font</label>
+                <select id="ioOutputFont" onchange="changeIOOutputFont(this.value); saveSettings();">
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                    <option value="'Lato', sans-serif">Lato</option>
+                    <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+                    <option value="'Nunito', sans-serif">Nunito</option>
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Merriweather', serif">Merriweather</option>
+                    <option value="'Fira Code', monospace">Fira Code</option>
+                    <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                    <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                    <option value="'Courier Prime', monospace">Courier Prime</option>
+                    <option value="'Google Sans Code', monospace">Google Sans Code</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                    <option value="'Consolas', monospace">Consolas</option>
+                </select>
+                <button onclick="applyIOStylesDirect()" style="background:#6a1b9a;font-size:8px;padding:2px 6px;height:20px;">Apply</button>
+            </div>
+        </div>
+        
+        <!-- Row 7: Margins & Gap Slider -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Layout</span>
+            <div class="ctrl-group">
+                <label>T</label>
+                <input type="number" id="marginTop" value="12" min="0" max="40" onchange="updatePageMargins(); saveSettings();">
+                <label>R</label>
+                <input type="number" id="marginRight" value="14" min="0" max="40" onchange="updatePageMargins(); saveSettings();">
+                <label>B</label>
+                <input type="number" id="marginBottom" value="12" min="0" max="40" onchange="updatePageMargins(); saveSettings();">
+                <label>L</label>
+                <input type="number" id="marginLeft" value="14" min="0" max="40" onchange="updatePageMargins(); saveSettings();">
+            </div>
+        </div>
+        
+        <!-- Row 7.5: Gap Controls - One Slider with 3 Modes -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Gap</span>
+            <div class="ctrl-group" style="min-width:220px;flex-wrap:wrap;gap:4px;padding:4px 6px;">
+                <label style="font-size:7px;color:#888;width:100%;margin-bottom:1px;">Target:</label>
+                <label style="font-size:8px;color:#1565c0;cursor:pointer;display:flex;align-items:center;gap:2px;">
+                    <input type="radio" name="gapMode" value="section" checked onchange="setGapMode('section')">
+                    Section
+                </label>
+                <label style="font-size:8px;color:#6a1b9a;cursor:pointer;display:flex;align-items:center;gap:2px;">
+                    <input type="radio" name="gapMode" value="heading" onchange="setGapMode('heading')">
+                    Head-Text
+                </label>
+                <label style="font-size:8px;color:#2e7d32;cursor:pointer;display:flex;align-items:center;gap:2px;">
+                    <input type="radio" name="gapMode" value="paragraph" onchange="setGapMode('paragraph')">
+                    Paragraph
+                </label>
+            </div>
+            <div class="ctrl-group" style="min-width:150px;">
+                <input type="range" id="gapSlider" min="0" max="30" value="12" step="1" 
+                       oninput="updateGapFromSlider(this.value);" style="width:80px;">
+                <span id="gapSliderLabel" style="font-size:8px;color:#aaa;min-width:25px;">12</span>
+            </div>
+            <button onclick="resetGaps()" style="background:#444;font-size:8px;padding:2px 6px;height:20px;">Reset</button>
+        </div>
+        
+        <!-- Row 8: Options & Zoom -->
+        <div class="toolbar-row">
+            <span class="toolbar-row-label">Options</span>
+            <div class="ctrl-group">
+                <input type="checkbox" id="preserveFormat" checked onchange="togglePreserveFormat(); saveSettings();">
+                <label for="preserveFormat">Preserve</label>
+            </div>
+            <div class="ctrl-group">
+                <input type="checkbox" id="wrapCode" onchange="toggleCodeWrap(); saveSettings();">
+                <label for="wrapCode">Wrap Code</label>
+                <input type="checkbox" id="wrapBody" onchange="toggleBodyWrap(); saveSettings();">
+                <label for="wrapBody">Wrap Body</label>
+            </div>
+            <div class="zoom-controls">
+                <button onclick="zoomToolbar(-0.1)">-</button>
+                <span class="zoom-level" id="zoomLevel">100%</span>
+                <button onclick="zoomToolbar(0.1)">+</button>
+            </div>
+            <button class="secondary" onclick="saveSettings(); alert('Settings saved!');">Save</button>
+            <button class="danger" onclick="resetContent()">Reset</button>
+        </div>
     </div>
 
     <div class="page preserve-format" id="pageContent">
-        <div class="header" contenteditable="false" data-field="title">ASSIGNMENT 1</div>
-        <hr class="divider">
+        <!-- Content will be dynamically generated -->
+    </div>
 
-        <div class="section-title" contenteditable="false" data-field="heading-problem">PROBLEM STATEMENT</div>
-        <div class="problem-statement" contenteditable="false" data-field="problem">Write a program to calculate the average of three numbers.</div>
+    <script>
+        // ================================================================
+        // SECTION 1: CONSTANTS & CONFIGURATION
+        // ================================================================
+        const ALL_FONTS = [
+            "'Roboto', sans-serif",
+            "'Open Sans', sans-serif",
+            "'Lato', sans-serif",
+            "'Montserrat', sans-serif",
+            "'Poppins', sans-serif",
+            "'Source Sans 3', sans-serif",
+            "'Nunito', sans-serif",
+            "'Raleway', sans-serif",
+            "'Oswald', sans-serif",
+            "'Ubuntu', sans-serif",
+            "'Inter', sans-serif",
+            "'Noto Sans', sans-serif",
+            "'Work Sans', sans-serif",
+            "'Playfair Display', serif",
+            "'Merriweather', serif",
+            "'PT Serif', serif",
+            "'Libre Baskerville', serif",
+            "'Crimson Text', serif"
+        ];
 
-        <div class="section-title" contenteditable="false" data-field="heading-algorithm">ALGORITHM</div>
-        <div class="algorithm" contenteditable="false" data-field="algorithm">Algorithm: average_of_three_numbers
+        const FONT_NAMES = [
+            "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins",
+            "Source Sans 3", "Nunito", "Raleway", "Oswald", "Ubuntu",
+            "Inter", "Noto Sans", "Work Sans", "Playfair Display",
+            "Merriweather", "PT Serif", "Libre Baskerville", "Crimson Text"
+        ];
+
+        const CODE_FONTS = [
+            "'Google Sans Code', monospace",
+            "'Courier New', monospace",
+            "'Consolas', monospace",
+            "'Monaco', monospace",
+            "'Menlo', monospace",
+            "'Roboto Mono', monospace"
+        ];
+
+        const CODE_FONT_NAMES = [
+            "Google Sans Code", "Courier New", "Consolas", "Monaco", "Menlo", "Roboto Mono"
+        ];
+
+        const DEFAULT_MARKDOWN = `# Assignment
+---
+
+### PROBLEM STATEMENT
+Write a program to calculate the average of three numbers.
+
+### ALGORITHM
+Algorithm: average_of_three_numbers
 Input: a, b, c
 Output: Average of three numbers.
+
 Step 1 [Read]: Read a, b, c
 Step 2 [Assign]: sum ← a + b + c
                   avg ← sum / 3
 Step 3 [Output]: print avg
-Step 4: Exit</div>
+Step 4: Exit
 
-        <div class="section-title" contenteditable="false" data-field="heading-source">SOURCE</div>
-        <div class="code-container">
-            <div class="code-header">
-                <span>C Source Code</span>
-                <span style="font-size:8px;color:#888;">[_C]</span>
-            </div>
-            <div class="code-block">
-                <div class="line-numbers" id="lineNumbers"></div>
-                <div class="code-content" id="codeContent" contenteditable="false" data-field="source" spellcheck="false">#include &lt;stdio.h&gt;
+### SOURCE CODE
+\`\`\`c
+#include <stdio.h>
 int main() {
     float a, b, c, sum, avg;
 
     printf("Enter First Number: ");
-    scanf("%f", &amp;a);
+    scanf("%f", &a);
     printf("Enter Second Number: ");
-    scanf("%f", &amp;b);
+    scanf("%f", &b);
     printf("Enter Third Number: ");
-    scanf("%f", &amp;c);
+    scanf("%f", &c);
 
     sum = a + b + c;
     avg = sum / 3;
 
-    printf("Average: %.2f\n", avg);
+    printf("Average: %.2f\\n", avg);
     return 0;
-}</div>
-            </div>
-        </div>
+}
+\`\`\`
 
-        <div class="section-title" contenteditable="false" data-field="heading-io">INPUT / OUTPUT</div>
-        <table class="io-table">
-            <thead>
-                <tr>
-                    <th contenteditable="false" data-field="heading-input">Input</th>
-                    <th contenteditable="false" data-field="heading-output">Output</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="io-input" contenteditable="false" data-field="input">Enter First Number: 10.5
-Enter Second Number: 20.0
-Enter Third Number: 30.25</td>
-                    <td contenteditable="false" data-field="output">Average: 20.25</td>
-                </tr>
-            </tbody>
-        </table>
+### INPUT/OUTPUT
+| Input | Output |
+|-------|--------|
+| Enter First Number: 10.5<br>Enter Second Number: 20.0<br>Enter Third Number: 30.25 | Average: 20.25 |
 
-        <div class="section-title" contenteditable="false" data-field="heading-discussion">DISCUSSION</div>
-        <div class="discussion" contenteditable="false" data-field="discussion">
-            <p>This program reads three decimal numbers from the user, adds them together, and divides the sum by three. It uses float types for precision and formats the final average to two decimal places.</p>
-            <p>The program ran successfully, correctly calculating and printing the average of 20.25 for the inputs 10.5, 20.0, and 30.25.</p>
-        </div>
-    </div>
+### DISCUSSION
+This program reads three decimal numbers from the user, adds them together, and divides the sum by three. It uses float types for precision and formats the final average to two decimal places.
 
-    <script>
+The program ran successfully, correctly calculating and printing the average of 20.25 for the inputs 10.5, 20.0, and 30.25.
+
+***`;
+
+        const STORAGE_KEY = 'assignmentAppData';
+        const MAX_UNDO_STEPS = 50;
+
+        // ================================================================
+        // SECTION 2: GLOBAL STATE VARIABLES
+        // ================================================================
+        let currentMarkdown = DEFAULT_MARKDOWN;
         let editMode = false;
-        const editableFields = document.querySelectorAll('[data-field]');
-        const codeContent = document.getElementById('codeContent');
-        const lineNumbers = document.getElementById('lineNumbers');
-        const toolbar = document.getElementById('toolbar');
-        const dragHandle = document.getElementById('dragHandle');
-        const pageContent = document.getElementById('pageContent');
+        let currentContext = 'none';
+        let toolbarZoom = 1.0;
+        let lastFocusedElement = null;
+        let focusedSectionType = null;
+        let undoStack = [];
+        let redoStack = [];
+        let isUndoRedo = false;
+        let markdownCache = {};
+        
+        // Gap values
+        let currentGapMode = 'section';
+        let gapValues = {
+            section: 12,
+            heading: 0,
+            paragraph: 2
+        };
 
-        // ========== LOAD SAVED SETTINGS ==========
-        function loadSettings() {
+        // ================================================================
+        // SECTION 3: SETTINGS & STORAGE
+        // ================================================================
+        function getSettingsObject() {
+            return {
+                headingFont: document.getElementById('headingFont')?.value || "'Montserrat', sans-serif",
+                bodyFont: document.getElementById('bodyFont')?.value || "'Merriweather', serif",
+                codeFont: document.getElementById('codeFont')?.value || "'Google Sans Code', monospace",
+                overallSize: document.getElementById('overallSize')?.value || "11",
+                headSize: document.getElementById('headSize')?.value || "15.5",
+                bodySize: document.getElementById('bodySize')?.value || "11",
+                codeSize: document.getElementById('codeSize')?.value || "11",
+                specificSize: document.getElementById('specificSize')?.value || "11",
+                ioInputSize: document.getElementById('ioInputSize')?.value || "10.5",
+                ioOutputSize: document.getElementById('ioOutputSize')?.value || "10.5",
+                ioInputFont: document.getElementById('ioInputFont')?.value || "'Fira Code', monospace",
+                ioOutputFont: document.getElementById('ioOutputFont')?.value || "'Roboto', sans-serif",
+                marginTop: document.getElementById('marginTop')?.value || "12",
+                marginRight: document.getElementById('marginRight')?.value || "14",
+                marginBottom: document.getElementById('marginBottom')?.value || "12",
+                marginLeft: document.getElementById('marginLeft')?.value || "14",
+                gapSection: gapValues.section || 12,
+                gapHeading: gapValues.heading || 0,
+                gapParagraph: gapValues.paragraph || 2,
+                gapMode: currentGapMode || 'section',
+                preserve: document.getElementById('preserveFormat')?.checked !== false,
+                wrapCode: document.getElementById('wrapCode')?.checked || false,
+                wrapBody: document.getElementById('wrapBody')?.checked || false
+            };
+        }
+
+        function saveAppData() {
             try {
-                const s = JSON.parse(localStorage.getItem('assignmentSettings') || '{}');
-                if (s.bodySize) {
-                    document.getElementById('bodyFontSize').value = s.bodySize;
-                    changeBodySize(s.bodySize);
+                const pageContent = document.getElementById('pageContent').innerHTML;
+                const data = {
+                    content: pageContent,
+                    markdown: currentMarkdown,
+                    settings: getSettingsObject(),
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                console.log('💾 App data saved');
+            } catch (e) {
+                console.warn('Failed to save app data:', e);
+            }
+        }
+
+        function loadAppData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    console.log('📂 App data loaded from:', new Date(data.timestamp).toLocaleString());
+                    
+                    if (data.content) {
+                        document.getElementById('pageContent').innerHTML = data.content;
+                    }
+                    
+                    if (data.markdown) {
+                        currentMarkdown = data.markdown;
+                    }
+                    
+                    if (data.settings) {
+                        applySettings(data.settings);
+                    }
+                    
+                    return true;
                 }
-                if (s.codeSize) {
-                    document.getElementById('codeFontSize').value = s.codeSize;
-                    changeCodeSize(s.codeSize);
+            } catch (e) {
+                console.warn('Failed to load app data:', e);
+            }
+            return false;
+        }
+
+        function applySettings(settings) {
+            try {
+                if (settings.headingFont) {
+                    document.getElementById('headingFont').value = settings.headingFont;
+                    changeHeadingFont(settings.headingFont);
                 }
-                if (s.headingFont) {
-                    document.getElementById('headingFont').value = s.headingFont;
-                    changeHeadingFont(s.headingFont);
+                if (settings.bodyFont) {
+                    document.getElementById('bodyFont').value = settings.bodyFont;
+                    changeBodyFont(settings.bodyFont);
                 }
-                if (s.bodyFont) {
-                    document.getElementById('bodyFont').value = s.bodyFont;
-                    changeBodyFont(s.bodyFont);
+                if (settings.codeFont) {
+                    document.getElementById('codeFont').value = settings.codeFont;
+                    changeCodeFont(settings.codeFont);
                 }
-                if (s.outputFont) {
-                    document.getElementById('outputFont').value = s.outputFont;
-                    changeOutputFont(s.outputFont);
+                if (settings.overallSize) {
+                    document.getElementById('overallSize').value = settings.overallSize;
+                    changeOverallSize(settings.overallSize);
                 }
-                if (typeof s.preserve !== 'undefined') {
-                    document.getElementById('preserveFormat').checked = s.preserve;
+                if (settings.headSize) {
+                    document.getElementById('headSize').value = settings.headSize;
+                    changeHeadSize(settings.headSize);
+                }
+                if (settings.bodySize) {
+                    document.getElementById('bodySize').value = settings.bodySize;
+                    changeBodySize(settings.bodySize);
+                }
+                if (settings.codeSize) {
+                    document.getElementById('codeSize').value = settings.codeSize;
+                    changeCodeSize(settings.codeSize);
+                }
+                if (settings.specificSize) {
+                    document.getElementById('specificSize').value = settings.specificSize;
+                }
+                if (settings.ioInputSize) {
+                    document.getElementById('ioInputSize').value = settings.ioInputSize;
+                    changeIOInputSize(settings.ioInputSize);
+                }
+                if (settings.ioOutputSize) {
+                    document.getElementById('ioOutputSize').value = settings.ioOutputSize;
+                    changeIOOutputSize(settings.ioOutputSize);
+                }
+                if (settings.ioInputFont) {
+                    document.getElementById('ioInputFont').value = settings.ioInputFont;
+                    changeIOInputFont(settings.ioInputFont);
+                }
+                if (settings.ioOutputFont) {
+                    document.getElementById('ioOutputFont').value = settings.ioOutputFont;
+                    changeIOOutputFont(settings.ioOutputFont);
+                }
+                if (settings.marginTop) {
+                    document.getElementById('marginTop').value = settings.marginTop;
+                    document.getElementById('marginRight').value = settings.marginRight || 14;
+                    document.getElementById('marginBottom').value = settings.marginBottom || 12;
+                    document.getElementById('marginLeft').value = settings.marginLeft || 14;
+                    updatePageMargins();
+                }
+                if (settings.gapSection !== undefined) {
+                    gapValues.section = parseInt(settings.gapSection) || 12;
+                }
+                if (settings.gapHeading !== undefined) {
+                    gapValues.heading = parseInt(settings.gapHeading) || 0;
+                }
+                if (settings.gapParagraph !== undefined) {
+                    gapValues.paragraph = parseInt(settings.gapParagraph) || 2;
+                }
+                if (settings.gapMode !== undefined) {
+                    currentGapMode = settings.gapMode;
+                }
+                if (settings.preserve !== undefined) {
+                    document.getElementById('preserveFormat').checked = settings.preserve;
                     togglePreserveFormat();
                 }
-                if (typeof s.wrapCode !== 'undefined') {
-                    document.getElementById('wrapCode').checked = s.wrapCode;
+                if (settings.wrapCode !== undefined) {
+                    document.getElementById('wrapCode').checked = settings.wrapCode;
                     toggleCodeWrap();
                 }
-                if (typeof s.wrapBody !== 'undefined') {
-                    document.getElementById('wrapBody').checked = s.wrapBody;
+                if (settings.wrapBody !== undefined) {
+                    document.getElementById('wrapBody').checked = settings.wrapBody;
                     toggleBodyWrap();
                 }
-                if (s.toolbarLeft !== undefined && s.toolbarTop !== undefined) {
-                    toolbar.style.right = 'auto';
-                    toolbar.style.left = s.toolbarLeft + 'px';
-                    toolbar.style.top = s.toolbarTop + 'px';
+                
+                // Initialize gaps after loading settings
+                setTimeout(function() {
+                    initGaps();
+                }, 100);
+                
+            } catch (e) {
+                console.warn('Failed to apply settings:', e);
+            }
+        }
+
+        // ================================================================
+        // SECTION 4: UNDO/REDO SYSTEM
+        // ================================================================
+        function saveState() {
+            if (isUndoRedo) return;
+            
+            const page = document.getElementById('pageContent');
+            const state = page.innerHTML;
+            
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === state) {
+                return;
+            }
+            
+            undoStack.push(state);
+            if (undoStack.length > MAX_UNDO_STEPS) {
+                undoStack.shift();
+            }
+            redoStack = [];
+            saveAppData();
+        }
+
+        function undoAction() {
+            if (undoStack.length <= 1) {
+                alert('Nothing to undo');
+                return;
+            }
+            
+            isUndoRedo = true;
+            const currentState = document.getElementById('pageContent').innerHTML;
+            redoStack.push(currentState);
+            
+            undoStack.pop();
+            const previousState = undoStack[undoStack.length - 1];
+            document.getElementById('pageContent').innerHTML = previousState;
+            
+            isUndoRedo = false;
+            applyAllStyles();
+            saveAppData();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = 'Undo';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        function redoAction() {
+            if (redoStack.length === 0) {
+                alert('Nothing to redo');
+                return;
+            }
+            
+            isUndoRedo = true;
+            const state = redoStack.pop();
+            const currentState = document.getElementById('pageContent').innerHTML;
+            undoStack.push(currentState);
+            document.getElementById('pageContent').innerHTML = state;
+            
+            isUndoRedo = false;
+            applyAllStyles();
+            saveAppData();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = 'Redo';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        // ================================================================
+        // SECTION 5: POPULATE FONT SELECTORS
+        // ================================================================
+        function populateFontSelectors() {
+            const selectors = ['headingFont', 'bodyFont'];
+            
+            selectors.forEach(selectorId => {
+                const select = document.getElementById(selectorId);
+                if (!select) return;
+                
+                select.innerHTML = '';
+                
+                for (let i = 0; i < ALL_FONTS.length; i++) {
+                    const option = document.createElement('option');
+                    option.value = ALL_FONTS[i];
+                    option.textContent = FONT_NAMES[i];
+                    select.appendChild(option);
                 }
-            } catch (e) {}
+                
+                let defaultFont = "'Merriweather', serif";
+                if (selectorId === 'headingFont') defaultFont = "'Montserrat', sans-serif";
+                
+                select.value = defaultFont;
+            });
+            
+            const codeSelect = document.getElementById('codeFont');
+            if (codeSelect) {
+                codeSelect.innerHTML = '';
+                for (let i = 0; i < CODE_FONTS.length; i++) {
+                    const option = document.createElement('option');
+                    option.value = CODE_FONTS[i];
+                    option.textContent = CODE_FONT_NAMES[i];
+                    codeSelect.appendChild(option);
+                }
+                codeSelect.value = "'Google Sans Code', monospace";
+            }
         }
 
-        function saveSettings() {
-            const s = {
-                bodySize: document.getElementById('bodyFontSize').value,
-                codeSize: document.getElementById('codeFontSize').value,
-                headingFont: document.getElementById('headingFont').value,
-                bodyFont: document.getElementById('bodyFont').value,
-                outputFont: document.getElementById('outputFont').value,
-                preserve: document.getElementById('preserveFormat').checked,
-                wrapCode: document.getElementById('wrapCode').checked,
-                wrapBody: document.getElementById('wrapBody').checked,
-                toolbarLeft: parseInt(toolbar.style.left) || null,
-                toolbarTop: parseInt(toolbar.style.top) || null
+        // ================================================================
+        // SECTION 6: MARKDOWN PARSER
+        // ================================================================
+        function parseMarkdown(md) {
+            const lines = md.split('\n');
+            const sections = {};
+            let currentSection = null;
+            let currentContent = [];
+            let title = 'Assignment';
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (!line) continue;
+                
+                if (line.startsWith('# ') && !line.startsWith('###')) {
+                    title = line.replace('# ', '').trim();
+                    continue;
+                }
+                
+                if (line === '---') continue;
+                if (line === '***') continue;
+                
+                const sectionMatch = line.match(/^###\s+(.+?)$/);
+                if (sectionMatch) {
+                    if (currentSection && currentContent.length > 0) {
+                        sections[currentSection] = currentContent.join('\n').trim();
+                    }
+                    currentSection = sectionMatch[1].toLowerCase().replace(/\s+/g, '_');
+                    currentContent = [];
+                    continue;
+                }
+                
+                if (currentSection) {
+                    currentContent.push(line);
+                }
+            }
+            
+            if (currentSection && currentContent.length > 0) {
+                sections[currentSection] = currentContent.join('\n').trim();
+            }
+            
+            return { title, sections };
+        }
+
+        // ================================================================
+        // SECTION 7: C CODE FORMATTER
+        // ================================================================
+        function formatCCode(code) {
+            const lines = code.split('\n').filter(line => line.trim());
+            let result = [];
+            let indentLevel = 0;
+            const indentSize = 4;
+            
+            for (let line of lines) {
+                const trimmed = line.trim();
+                
+                if (trimmed === '}' || trimmed.startsWith('}')) {
+                    indentLevel = Math.max(0, indentLevel - 1);
+                }
+                
+                if (trimmed === 'else' || trimmed.startsWith('else ')) {
+                    if (result.length > 0 && result[result.length - 1].trim().endsWith('{')) {
+                        result[result.length - 1] = result[result.length - 1].trim().replace(/\{$/, '');
+                    }
+                    const indent = ' '.repeat(indentLevel * indentSize);
+                    result.push(indent + trimmed);
+                    if (trimmed.endsWith('{')) {
+                        indentLevel++;
+                    }
+                    continue;
+                }
+                
+                const endsWithBrace = trimmed.endsWith('{');
+                const indent = ' '.repeat(indentLevel * indentSize);
+                result.push(indent + trimmed);
+                
+                if (endsWithBrace && trimmed !== 'else' && !trimmed.startsWith('else ')) {
+                    indentLevel++;
+                }
+            }
+            
+            return result.join('\n');
+        }
+
+        // ================================================================
+        // SECTION 8: ALGORITHM FORMATTER
+        // ================================================================
+        function formatAlgorithm(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            let result = [];
+            let indentLevel = 0;
+            
+            for (let line of lines) {
+                const trimmed = line.trim();
+                
+                if (trimmed.match(/^(Step\s+\d+|Step\s+\[|\d+\.)/i)) {
+                    indentLevel = 0;
+                } else if (trimmed.startsWith('Step')) {
+                    indentLevel = 1;
+                }
+                
+                const indent = ' '.repeat(indentLevel * 2);
+                result.push(indent + trimmed);
+                
+                if (trimmed.endsWith(':') || trimmed.includes('then') || trimmed.includes('→')) {
+                    indentLevel = 1;
+                }
+            }
+            
+            return result.join('\n');
+        }
+
+        // ================================================================
+        // SECTION 9: RENDER ENGINE
+        // ================================================================
+        function renderAssignment(markdown) {
+            const parsed = parseMarkdown(markdown);
+            const { title, sections } = parsed;
+            const page = document.getElementById('pageContent');
+            
+            page.innerHTML = '';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'header';
+            titleDiv.setAttribute('contenteditable', 'false');
+            titleDiv.setAttribute('data-field', 'title');
+            titleDiv.textContent = title || 'Assignment';
+            page.appendChild(titleDiv);
+            
+            const divider = document.createElement('hr');
+            divider.className = 'divider';
+            page.appendChild(divider);
+            
+            const sectionOrder = ['problem_statement', 'algorithm', 'source_code', 'input/output', 'discussion'];
+            
+            sectionOrder.forEach(sectionName => {
+                const content = sections[sectionName];
+                if (!content) return;
+                
+                let sectionType = 'default';
+                let titleText = '';
+                
+                switch(sectionName) {
+                    case 'problem_statement':
+                        sectionType = 'problem';
+                        titleText = 'PROBLEM STATEMENT';
+                        break;
+                    case 'algorithm':
+                        sectionType = 'algorithm';
+                        titleText = 'ALGORITHM';
+                        break;
+                    case 'source_code':
+                        sectionType = 'source';
+                        titleText = 'SOURCE';
+                        break;
+                    case 'input/output':
+                        sectionType = 'io';
+                        titleText = 'INPUT / OUTPUT';
+                        break;
+                    case 'discussion':
+                        sectionType = 'discussion';
+                        titleText = 'DISCUSSION';
+                        break;
+                    default:
+                        return;
+                }
+                
+                const titleEl = document.createElement('div');
+                titleEl.className = 'section-title';
+                titleEl.setAttribute('contenteditable', 'false');
+                titleEl.setAttribute('data-field', `heading-${sectionName}`);
+                titleEl.textContent = titleText;
+                page.appendChild(titleEl);
+                
+                switch(sectionType) {
+                    case 'problem':
+                        const problemEl = document.createElement('div');
+                        problemEl.className = 'problem-statement';
+                        problemEl.setAttribute('contenteditable', 'false');
+                        problemEl.setAttribute('data-field', 'problem');
+                        problemEl.innerHTML = content.replace(/\n/g, '<br>');
+                        page.appendChild(problemEl);
+                        break;
+                        
+                    case 'algorithm':
+                        const algoEl = document.createElement('div');
+                        algoEl.className = 'algorithm';
+                        algoEl.setAttribute('contenteditable', 'false');
+                        algoEl.setAttribute('data-field', 'algorithm');
+                        algoEl.textContent = content;
+                        page.appendChild(algoEl);
+                        break;
+                        
+                    case 'source':
+                        const codeMatch = content.match(/```(\w*)\n([\s\S]*?)```/);
+                        const codeContent = codeMatch ? codeMatch[2].trim() : content;
+                        
+                        const codeContainer = document.createElement('div');
+                        codeContainer.className = 'code-container';
+                        
+                        const codeHeader = document.createElement('div');
+                        codeHeader.className = 'code-header';
+                        codeHeader.innerHTML = `<span>C Source Code</span>`;
+                        codeContainer.appendChild(codeHeader);
+                        
+                        const codeBlock = document.createElement('div');
+                        codeBlock.className = 'code-block';
+                        
+                        const lineNumbers = document.createElement('div');
+                        lineNumbers.className = 'line-numbers';
+                        codeBlock.appendChild(lineNumbers);
+                        
+                        const codeEl = document.createElement('div');
+                        codeEl.className = 'code-content';
+                        codeEl.setAttribute('contenteditable', 'false');
+                        codeEl.setAttribute('data-field', 'source');
+                        codeEl.setAttribute('spellcheck', 'false');
+                        codeEl.textContent = codeContent;
+                        codeBlock.appendChild(codeEl);
+                        
+                        codeContainer.appendChild(codeBlock);
+                        page.appendChild(codeContainer);
+                        
+                        setTimeout(() => updateLineNumbersFor(codeEl), 10);
+                        break;
+                        
+                    case 'io':
+                        const table = document.createElement('table');
+                        table.className = 'io-table';
+                        table.setAttribute('data-table', 'true');
+                        
+                        const tableRows = content.split('\n').filter(line => line.trim().startsWith('|'));
+                        if (tableRows.length > 0) {
+                            const thead = document.createElement('thead');
+                            const headerRow = document.createElement('tr');
+                            const headers = parseTableRow(tableRows[0]);
+                            
+                            headers.forEach((h, idx) => {
+                                const th = document.createElement('th');
+                                th.setAttribute('contenteditable', 'false');
+                                th.setAttribute('data-field', `heading-${idx}`);
+                                th.innerHTML = h.replace(/\n/g, '<br>');
+                                headerRow.appendChild(th);
+                            });
+                            
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+                            
+                            const tbody = document.createElement('tbody');
+                            for (let i = 2; i < tableRows.length; i++) {
+                                const cells = parseTableRow(tableRows[i]);
+                                if (cells.length > 0) {
+                                    const tr = document.createElement('tr');
+                                    tr.setAttribute('data-row', 'true');
+                                    cells.forEach((cell, idx) => {
+                                        const td = document.createElement('td');
+                                        td.setAttribute('contenteditable', 'false');
+                                        td.setAttribute('data-field', idx === 0 ? 'input' : 'output');
+                                        td.className = idx === 0 ? 'io-input input-cell' : 'output-cell';
+                                        td.innerHTML = cell.replace(/\n/g, '<br>');
+                                        tr.appendChild(td);
+                                    });
+                                    
+                                    const delTd = document.createElement('td');
+                                    delTd.className = 'col-actions';
+                                    delTd.style.width = '30px';
+                                    delTd.style.textAlign = 'center';
+                                    delTd.style.background = '#f0f0f0';
+                                    const delBtn = document.createElement('button');
+                                    delBtn.className = 'row-delete-btn';
+                                    delBtn.textContent = '×';
+                                    delBtn.onmousedown = function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    };
+                                    delBtn.onclick = function(e) {
+                                        e.stopPropagation();
+                                        if (confirm('Delete this row?')) {
+                                            const row = this.closest('tr');
+                                            if (row && row.parentElement.querySelectorAll('tr').length > 1) {
+                                                row.remove();
+                                                saveState();
+                                            } else {
+                                                alert('Cannot delete the last row.');
+                                            }
+                                        }
+                                    };
+                                    delTd.appendChild(delBtn);
+                                    tr.appendChild(delTd);
+                                    
+                                    tbody.appendChild(tr);
+                                }
+                            }
+                            table.appendChild(tbody);
+                        } else {
+                            const thead = document.createElement('thead');
+                            const headerRow = document.createElement('tr');
+                            const th1 = document.createElement('th');
+                            th1.textContent = 'Input';
+                            headerRow.appendChild(th1);
+                            const th2 = document.createElement('th');
+                            th2.textContent = 'Output';
+                            headerRow.appendChild(th2);
+                            thead.appendChild(headerRow);
+                            table.appendChild(thead);
+                            
+                            const tbody = document.createElement('tbody');
+                            const tr = document.createElement('tr');
+                            const td1 = document.createElement('td');
+                            td1.setAttribute('contenteditable', 'false');
+                            td1.className = 'input-cell';
+                            td1.textContent = 'Enter input here';
+                            tr.appendChild(td1);
+                            const td2 = document.createElement('td');
+                            td2.setAttribute('contenteditable', 'false');
+                            td2.className = 'output-cell';
+                            td2.textContent = 'Output will appear here';
+                            tr.appendChild(td2);
+                            
+                            const delTd = document.createElement('td');
+                            delTd.className = 'col-actions';
+                            delTd.style.width = '30px';
+                            delTd.style.textAlign = 'center';
+                            delTd.style.background = '#f0f0f0';
+                            const delBtn = document.createElement('button');
+                            delBtn.className = 'row-delete-btn';
+                            delBtn.textContent = '×';
+                            delBtn.onclick = function() {
+                                if (confirm('Delete this row?')) {
+                                    const row = this.closest('tr');
+                                    if (row && row.parentElement.querySelectorAll('tr').length > 1) {
+                                        row.remove();
+                                        saveState();
+                                    } else {
+                                        alert('Cannot delete the last row.');
+                                    }
+                                }
+                            };
+                            delTd.appendChild(delBtn);
+                            tr.appendChild(delTd);
+                            
+                            tbody.appendChild(tr);
+                            table.appendChild(tbody);
+                        }
+                        page.appendChild(table);
+                        
+                        setTimeout(() => {
+                            applyIOStylesDirect();
+                        }, 100);
+                        break;
+                        
+                    case 'discussion':
+                        const discEl = document.createElement('div');
+                        discEl.className = 'discussion';
+                        discEl.setAttribute('contenteditable', 'false');
+                        discEl.setAttribute('data-field', 'discussion');
+                        const paragraphs = content.split('\n\n').filter(p => p.trim());
+                        if (paragraphs.length > 0) {
+                            paragraphs.forEach(p => {
+                                const pEl = document.createElement('p');
+                                pEl.innerHTML = p.trim().replace(/\n/g, '<br>');
+                                discEl.appendChild(pEl);
+                            });
+                        } else {
+                            discEl.innerHTML = content.replace(/\n/g, '<br>');
+                        }
+                        page.appendChild(discEl);
+                        break;
+                }
+            });
+            
+            currentMarkdown = markdown;
+            saveState();
+            applyAllStyles();
+            setTimeout(function() {
+                initGaps();
+                applyIOStylesDirect();
+                updatePrintGaps();
+            }, 200);
+        }
+
+        // ================================================================
+        // SECTION 10: TABLE HELPERS
+        // ================================================================
+        function parseTableRow(row) {
+            return row.trim()
+                .replace(/^\|/, '')
+                .replace(/\|$/, '')
+                .split('|')
+                .map(cell => cell.trim())
+                .filter(cell => cell && !cell.match(/^:?-+:?$/));
+        }
+
+        function updateLineNumbersFor(codeEl) {
+            const block = codeEl.closest('.code-block');
+            if (!block) return;
+            const numbersEl = block.querySelector('.line-numbers');
+            if (!numbersEl) return;
+            
+            const text = codeEl.textContent || '';
+            const lines = text.split('\n');
+            const count = Math.max(lines.length, 1);
+            numbersEl.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                const span = document.createElement('span');
+                span.textContent = i;
+                numbersEl.appendChild(span);
+            }
+        }
+
+        // ================================================================
+        // SECTION 11: I/O TABLE STYLING FUNCTIONS
+        // ================================================================
+        function applyIOStylesDirect() {
+            var inputSelect = document.getElementById('ioInputFont');
+            var outputSelect = document.getElementById('ioOutputFont');
+            var inputSizeSelect = document.getElementById('ioInputSize');
+            var outputSizeSelect = document.getElementById('ioOutputSize');
+            
+            var inputFont = inputSelect ? inputSelect.value : "'Fira Code', monospace";
+            var outputFont = outputSelect ? outputSelect.value : "'Roboto', sans-serif";
+            var inputSize = inputSizeSelect ? inputSizeSelect.value : "10.5";
+            var outputSize = outputSizeSelect ? outputSizeSelect.value : "10.5";
+            
+            document.querySelectorAll('.io-table .input-cell').forEach(function(cell) {
+                cell.style.fontFamily = inputFont;
+                cell.style.fontSize = inputSize + 'pt';
+                cell.style.fontWeight = '500';
+                cell.style.lineHeight = '1.0';
+                cell.style.padding = '2px 6px';
+            });
+            
+            document.querySelectorAll('.io-table .output-cell').forEach(function(cell) {
+                cell.style.fontFamily = outputFont;
+                cell.style.fontSize = outputSize + 'pt';
+                cell.style.fontWeight = '500';
+                cell.style.lineHeight = '1.0';
+                cell.style.padding = '2px 6px';
+            });
+            
+            console.log('✅ I/O Fonts applied: Input=' + inputFont + ', Output=' + outputFont);
+        }
+
+        function changeIOInputSize(size) {
+            var pt = parseFloat(size);
+            document.querySelectorAll('.io-table .input-cell').forEach(function(el) {
+                el.style.fontSize = pt + 'pt';
+            });
+            saveAppData();
+        }
+
+        function changeIOOutputSize(size) {
+            var pt = parseFloat(size);
+            document.querySelectorAll('.io-table .output-cell').forEach(function(el) {
+                el.style.fontSize = pt + 'pt';
+            });
+            saveAppData();
+        }
+
+        function changeIOInputFont(font) {
+            document.querySelectorAll('.io-table .input-cell').forEach(function(el) {
+                el.style.fontFamily = font;
+            });
+            saveAppData();
+            console.log('Input font changed to:', font);
+        }
+
+        function changeIOOutputFont(font) {
+            document.querySelectorAll('.io-table .output-cell').forEach(function(el) {
+                el.style.fontFamily = font;
+            });
+            saveAppData();
+            console.log('Output font changed to:', font);
+        }
+
+        // ================================================================
+        // SECTION 12: TABLE OPERATIONS
+        // ================================================================
+        function getTable() {
+            const el = getFocusedElement();
+            if (!el) {
+                alert('Please click inside the table first.');
+                return null;
+            }
+            
+            const table = el.closest('.io-table');
+            if (!table) {
+                alert('Please click inside the table first.');
+                return null;
+            }
+            return table;
+        }
+
+        function addTableRow() {
+            const table = getTable();
+            if (!table) return;
+            
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+            
+            const firstRow = tbody.querySelector('tr');
+            if (!firstRow) return;
+            
+            const cells = firstRow.querySelectorAll('td:not(.col-actions)');
+            const newRow = document.createElement('tr');
+            
+            cells.forEach((cell, index) => {
+                const td = document.createElement('td');
+                td.setAttribute('contenteditable', 'true');
+                td.className = index === 0 ? 'io-input input-cell' : 'output-cell';
+                td.textContent = 'New value';
+                newRow.appendChild(td);
+            });
+            
+            const delTd = document.createElement('td');
+            delTd.className = 'col-actions';
+            delTd.style.width = '30px';
+            delTd.style.textAlign = 'center';
+            delTd.style.background = '#f0f0f0';
+            const delBtn = document.createElement('button');
+            delBtn.className = 'row-delete-btn';
+            delBtn.textContent = '×';
+            delBtn.onmousedown = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
             };
-            localStorage.setItem('assignmentSettings', JSON.stringify(s));
+            delBtn.onclick = function(e) {
+                e.stopPropagation();
+                if (confirm('Delete this row?')) {
+                    const row = this.closest('tr');
+                    if (row && row.parentElement.querySelectorAll('tr').length > 1) {
+                        row.remove();
+                        saveState();
+                    } else {
+                        alert('Cannot delete the last row.');
+                    }
+                }
+            };
+            delTd.appendChild(delBtn);
+            newRow.appendChild(delTd);
+            
+            tbody.appendChild(newRow);
+            saveState();
+            
+            setTimeout(function() {
+                applyIOStylesDirect();
+            }, 50);
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = 'Row added!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
         }
 
-        // ========== PRESERVE FORMAT ==========
+        function deleteTableRow() {
+            const table = getTable();
+            if (!table) return;
+            
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+            
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length <= 1) {
+                alert('Cannot delete the last row.');
+                return;
+            }
+            
+            const el = getFocusedElement();
+            const row = el ? el.closest('tr') : null;
+            
+            if (row && row.parentElement === tbody) {
+                if (confirm('Delete this row?')) {
+                    row.remove();
+                    saveState();
+                    const status = document.getElementById('editStatus');
+                    status.textContent = 'Row deleted!';
+                    setTimeout(() => {
+                        status.textContent = editMode ? 'Edit ON' : 'View';
+                    }, 1500);
+                }
+            } else {
+                alert('Please click inside a row first.');
+            }
+        }
+
+        function addTableColumn() {
+            const table = getTable();
+            if (!table) return;
+            
+            const allRows = table.querySelectorAll('tr');
+            
+            const headerRow = allRows[0];
+            if (headerRow) {
+                const newTh = document.createElement('th');
+                newTh.setAttribute('contenteditable', 'true');
+                newTh.textContent = 'New Col';
+                headerRow.appendChild(newTh);
+            }
+            
+            for (let i = 1; i < allRows.length; i++) {
+                const row = allRows[i];
+                const newTd = document.createElement('td');
+                newTd.setAttribute('contenteditable', 'true');
+                newTd.className = 'output-cell';
+                newTd.textContent = 'New value';
+                const delCol = row.querySelector('.col-actions');
+                if (delCol) {
+                    row.insertBefore(newTd, delCol);
+                } else {
+                    row.appendChild(newTd);
+                }
+            }
+            
+            saveState();
+            
+            setTimeout(function() {
+                applyIOStylesDirect();
+            }, 50);
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = 'Column added!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        function deleteTableColumn() {
+            const table = getTable();
+            if (!table) return;
+            
+            const allRows = table.querySelectorAll('tr');
+            
+            const firstRow = allRows[0];
+            const headerCells = firstRow.querySelectorAll('th:not(.col-actions)');
+            if (headerCells.length <= 1) {
+                alert('Cannot delete the last column.');
+                return;
+            }
+            
+            if (confirm('Delete the last column?')) {
+                const lastTh = firstRow.querySelector('th:not(.col-actions):last-child');
+                if (lastTh) lastTh.remove();
+                
+                for (let i = 1; i < allRows.length; i++) {
+                    const row = allRows[i];
+                    const cells = row.querySelectorAll('td:not(.col-actions)');
+                    if (cells.length > 0) {
+                        const lastTd = cells[cells.length - 1];
+                        if (lastTd) lastTd.remove();
+                    }
+                }
+                
+                saveState();
+                
+                const status = document.getElementById('editStatus');
+                status.textContent = 'Column deleted!';
+                setTimeout(() => {
+                    status.textContent = editMode ? 'Edit ON' : 'View';
+                }, 1500);
+            }
+        }
+
+        // ================================================================
+        // SECTION 13: GAP CONTROLS - ONE SLIDER WITH 3 MODES
+        // ================================================================
+        
+        // Set the gap mode
+        function setGapMode(mode) {
+            currentGapMode = mode;
+            
+            var slider = document.getElementById('gapSlider');
+            var label = document.getElementById('gapSliderLabel');
+            var value = gapValues[mode] || 0;
+            
+            slider.value = value;
+            label.textContent = value;
+            
+            slider.className = 'mode-' + mode;
+            
+            document.querySelectorAll('input[name="gapMode"]').forEach(function(radio) {
+                radio.checked = (radio.value === mode);
+            });
+            
+            updateGapFromSlider(value);
+            saveAppData();
+        }
+
+        // Update gap from slider
+        function updateGapFromSlider(value) {
+            var gap = parseInt(value) || 0;
+            
+            document.getElementById('gapSliderLabel').textContent = gap;
+            gapValues[currentGapMode] = gap;
+            
+            switch(currentGapMode) {
+                case 'section':
+                    updateSectionGap(gap);
+                    break;
+                case 'heading':
+                    updateHeadingGap(gap);
+                    break;
+                case 'paragraph':
+                    updateParagraphGap(gap);
+                    break;
+            }
+            
+            updatePrintGaps();
+            saveAppData();
+        }
+
+        // 1. Section Gap - BETWEEN sections
+        function updateSectionGap(value) {
+            var gap = parseInt(value) || 0;
+            
+            document.querySelectorAll('.section-title:not(:first-of-type)').forEach(function(el) {
+                el.style.marginTop = gap + 'px';
+            });
+            
+            document.querySelectorAll('.section-title:first-of-type').forEach(function(el) {
+                el.style.marginTop = Math.max(0, Math.floor(gap / 2)) + 'px';
+            });
+        }
+
+        // 2. Heading-Text Gap - Between heading and its content
+        function updateHeadingGap(value) {
+            var gap = parseInt(value) || 0;
+            
+            document.querySelectorAll('.section-title + .problem-statement, .section-title + .algorithm, .section-title + .code-container, .section-title + .io-table, .section-title + .discussion').forEach(function(el) {
+                el.style.marginTop = gap + 'px';
+            });
+        }
+
+        // 3. Paragraph Gap - Between paragraphs inside text sections
+        function updateParagraphGap(value) {
+            var gap = parseInt(value) || 0;
+            
+            document.querySelectorAll('.discussion p, .problem-statement p').forEach(function(el) {
+                el.style.marginTop = gap + 'px';
+            });
+            
+            document.querySelectorAll('.discussion p + p, .problem-statement p + p').forEach(function(el) {
+                el.style.marginTop = gap + 'px';
+            });
+        }
+
+        // Reset all gaps to defaults
+        function resetGaps() {
+            gapValues = {
+                section: 12,
+                heading: 0,
+                paragraph: 2
+            };
+            
+            var slider = document.getElementById('gapSlider');
+            var value = gapValues[currentGapMode];
+            slider.value = value;
+            document.getElementById('gapSliderLabel').textContent = value;
+            
+            updateGapFromSlider(value);
+            updatePrintGaps();
+            saveAppData();
+            
+            var status = document.getElementById('editStatus');
+            status.textContent = '🔄 Gaps reset!';
+            setTimeout(function() {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        // Initialize gaps on page load
+        function initGaps() {
+            var defaultMode = 'section';
+            
+            gapValues = {
+                section: 12,
+                heading: 0,
+                paragraph: 2
+            };
+            
+            setGapMode(defaultMode);
+            
+            updateSectionGap(gapValues.section);
+            updateHeadingGap(gapValues.heading);
+            updateParagraphGap(gapValues.paragraph);
+            updatePrintGaps();
+        }
+
+        // ================================================================
+        // SECTION 14: APPLY GAPS TO PRINT
+        // ================================================================
+        function updatePrintGaps() {
+            var sectionGap = gapValues.section || 12;
+            var headingGap = gapValues.heading || 0;
+            var paragraphGap = gapValues.paragraph || 2;
+            
+            var styleTag = document.getElementById('printGapStyles');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = 'printGapStyles';
+                document.head.appendChild(styleTag);
+            }
+            
+            styleTag.textContent = `
+                @media print {
+                    .section-title:not(:first-of-type) {
+                        margin-top: ${sectionGap}px !important;
+                    }
+                    .section-title:first-of-type {
+                        margin-top: ${Math.max(0, Math.floor(sectionGap / 2))}px !important;
+                    }
+                    .section-title + .problem-statement,
+                    .section-title + .algorithm,
+                    .section-title + .code-container,
+                    .section-title + .io-table,
+                    .section-title + .discussion {
+                        margin-top: ${headingGap}px !important;
+                    }
+                    .discussion p,
+                    .problem-statement p {
+                        margin-top: ${paragraphGap}px !important;
+                    }
+                    .discussion p + p,
+                    .problem-statement p + p {
+                        margin-top: ${paragraphGap}px !important;
+                    }
+                }
+            `;
+        }
+
+        // ================================================================
+        // SECTION 15: GAP CONTROL (Legacy - kept for compatibility)
+        // ================================================================
+        function applyGap() {
+            updateSectionGap(gapValues.section);
+            updateHeadingGap(gapValues.heading);
+            updateParagraphGap(gapValues.paragraph);
+            updatePrintGaps();
+        }
+
+        // ================================================================
+        // SECTION 16: FONT WEIGHT CONTROLS
+        // ================================================================
+        function applyWeight(weight) {
+            const el = getFocusedElement();
+            if (!el) {
+                alert('Please click inside a text section first.');
+                return;
+            }
+            
+            el.classList.remove('weight-thin', 'weight-light', 'weight-regular', 'weight-medium', 'weight-bold', 'weight-black');
+            
+            const weightMap = {
+                '100': 'weight-thin',
+                '300': 'weight-light',
+                '400': 'weight-regular',
+                '500': 'weight-medium',
+                '700': 'weight-bold',
+                '900': 'weight-black'
+            };
+            
+            if (weightMap[weight]) {
+                el.classList.add(weightMap[weight]);
+            }
+            
+            document.querySelectorAll('.weight-controls button').forEach(btn => {
+                btn.classList.remove('active-weight');
+            });
+            const weightNames = {'100':'Thin','300':'Light','400':'Reg','500':'Med','700':'Bold','900':'Black'};
+            document.querySelectorAll('.weight-controls button').forEach(btn => {
+                if (btn.textContent === weightNames[weight]) {
+                    btn.classList.add('active-weight');
+                }
+            });
+            
+            saveState();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = 'Weight: ' + weightNames[weight];
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        // ================================================================
+        // SECTION 17: SIZE FUNCTIONS
+        // ================================================================
+        function changeOverallSize(size) {
+            const pt = parseFloat(size);
+            const allElements = document.querySelectorAll('.header, .section-title, .problem-statement, .algorithm, .discussion, .io-table td, .io-table th, .code-content, .line-numbers');
+            
+            allElements.forEach(el => {
+                const isHeader = el.classList.contains('header');
+                const isSectionTitle = el.classList.contains('section-title');
+                const isProblem = el.classList.contains('problem-statement');
+                const isAlgo = el.classList.contains('algorithm');
+                const isDiscussion = el.classList.contains('discussion');
+                const isTable = el.closest('.io-table') !== null;
+                const isCode = el.classList.contains('code-content') || el.classList.contains('line-numbers');
+                const isInputCell = el.classList.contains('input-cell');
+                const isOutputCell = el.classList.contains('output-cell');
+                
+                if (isInputCell || isOutputCell) return;
+                
+                if (isHeader && !document.getElementById('headSize').value) {
+                    el.style.fontSize = pt + 'pt';
+                } else if ((isSectionTitle || isProblem || isAlgo || isDiscussion || isTable) && !document.getElementById('bodySize').value) {
+                    el.style.fontSize = pt + 'pt';
+                } else if (isCode && !document.getElementById('codeSize').value) {
+                    el.style.fontSize = pt + 'pt';
+                } else if (!isHeader && !isSectionTitle && !isProblem && !isAlgo && !isDiscussion && !isTable && !isCode) {
+                    el.style.fontSize = pt + 'pt';
+                }
+            });
+            
+            document.body.style.fontSize = pt + 'pt';
+            saveAppData();
+        }
+
+        function changeHeadSize(size) {
+            const pt = parseFloat(size);
+            document.querySelectorAll('.header').forEach(el => {
+                el.style.fontSize = pt + 'pt';
+            });
+            saveAppData();
+        }
+
+        function changeBodySize(size) {
+            const pt = parseFloat(size);
+            document.querySelectorAll('.section-title, .problem-statement, .algorithm, .discussion, .io-table th').forEach(el => {
+                el.style.fontSize = pt + 'pt';
+            });
+            saveAppData();
+        }
+
+        function changeCodeSize(size) {
+            const pt = parseFloat(size);
+            document.querySelectorAll('.code-content, .line-numbers').forEach(el => {
+                el.style.fontSize = pt + 'pt';
+            });
+            saveAppData();
+        }
+
+        function changeSpecificSize(size) {
+            const pt = parseFloat(size);
+            if (focusedSectionType) {
+                const classMap = {
+                    'code-content': '.code-content',
+                    'algorithm': '.algorithm',
+                    'io-table': '.io-table td, .io-table th',
+                    'problem-statement': '.problem-statement',
+                    'discussion': '.discussion',
+                    'text': '[data-field]'
+                };
+                
+                const selector = classMap[focusedSectionType] || '[data-field]';
+                document.querySelectorAll(selector).forEach(el => {
+                    el.style.fontSize = pt + 'pt';
+                });
+            }
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 18: FONT FUNCTIONS
+        // ================================================================
+        function changeHeadingFont(font) {
+            document.querySelectorAll('.header, .section-title, .io-table th').forEach(el => {
+                el.style.fontFamily = font;
+            });
+            saveAppData();
+        }
+
+        function changeBodyFont(font) {
+            document.querySelectorAll('.problem-statement, .algorithm, .discussion, .io-table td:not(.input-cell):not(.output-cell)').forEach(el => {
+                if (!el.closest('.code-container')) {
+                    el.style.fontFamily = font;
+                }
+            });
+            saveAppData();
+        }
+
+        function changeCodeFont(font) {
+            document.querySelectorAll('.code-content, .line-numbers').forEach(el => {
+                el.style.fontFamily = font;
+            });
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 19: PAGE MARGINS
+        // ================================================================
+        function updatePageMargins() {
+            const top = document.getElementById('marginTop').value;
+            const right = document.getElementById('marginRight').value;
+            const bottom = document.getElementById('marginBottom').value;
+            const left = document.getElementById('marginLeft').value;
+            
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.padding = top + 'mm ' + right + 'mm ' + bottom + 'mm ' + left + 'mm';
+            });
+            
+            let styleTag = document.getElementById('dynamicPrintMargins');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = 'dynamicPrintMargins';
+                document.head.appendChild(styleTag);
+            }
+            
+            styleTag.textContent = `
+                @page {
+                    margin: ${top}mm ${right}mm ${bottom}mm ${left}mm !important;
+                }
+            `;
+            
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 20: IMPORT/EXPORT
+        // ================================================================
+        function importMarkdown() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.md,.markdown,.txt';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const markdown = e.target.result;
+                    try {
+                        renderAssignment(markdown);
+                        currentMarkdown = markdown;
+                        saveAppData();
+                        const status = document.getElementById('editStatus');
+                        status.textContent = '✅ Imported!';
+                        setTimeout(() => {
+                            status.textContent = editMode ? 'Edit ON' : 'View';
+                        }, 2000);
+                    } catch (error) {
+                        alert('Error importing markdown: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function downloadTemplate() {
+            const templateWithCommands = `# Assignment
+---
+
+### PROBLEM STATEMENT
+Write your problem statement here.
+
+### ALGORITHM
+Algorithm: your_algorithm_name
+Input: input_variables
+Output: output_description
+
+Step 1: Description of step 1
+Step 2: Description of step 2
+Step 3: Description of step 3
+
+### SOURCE CODE
+\`\`\`c
+// Your C code here
+#include <stdio.h>
+int main() {
+    // Code implementation
+    return 0;
+}
+\`\`\`
+
+### INPUT/OUTPUT
+| Input | Output |
+|-------|--------|
+| Sample input 1 | Sample output 1 |
+| Sample input 2 | Sample output 2 |
+
+### DISCUSSION
+Write your discussion here. You can use **bold** or *italic* text.
+
+You can also add multiple paragraphs.
+
+***
+
+# Additional Sections
+You can add more sections using the same format:
+
+### CUSTOM SECTION
+Any content you want.
+
+---
+
+### ANOTHER SECTION
+More content here.`;
+
+            const blob = new Blob([templateWithCommands], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'assignment_template.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = '📄 Template downloaded!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 2000);
+        }
+
+        // ================================================================
+        // SECTION 21: CONTEXT-AWARE TOOLBAR
+        // ================================================================
+        function updateContext(element) {
+            const toolbar = document.getElementById('toolbar');
+            const contextHint = document.getElementById('contextHint');
+            const contextName = document.getElementById('contextName');
+            const specificSizeGroup = document.getElementById('specificSizeGroup');
+            const ioSizeGroup = document.getElementById('ioSizeGroup');
+            const ioFontGroup = document.getElementById('ioFontGroup');
+            
+            document.querySelectorAll('.context-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (!element) {
+                toolbar.classList.remove('context-active');
+                contextHint.classList.remove('active');
+                specificSizeGroup.style.display = 'none';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+                focusedSectionType = null;
+                return;
+            }
+            
+            const isCode = element.classList.contains('code-content');
+            const isAlgorithm = element.classList.contains('algorithm');
+            const isTable = element.closest('.io-table') !== null;
+            const isProblem = element.closest('.problem-statement') !== null;
+            const isDiscussion = element.closest('.discussion') !== null;
+            const isTextElement = element.closest('[data-field]') !== null && !isCode && !isAlgorithm && !isTable;
+            const isRendered = element.classList.contains('rendered-markdown');
+            
+            toolbar.classList.add('context-active');
+            contextHint.classList.add('active');
+            
+            if (isCode) {
+                focusedSectionType = 'code-content';
+                contextName.textContent = 'Code';
+                document.getElementById('ctxFormatC').classList.add('active');
+                specificSizeGroup.style.display = 'flex';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+                if (isRendered) {
+                    document.getElementById('ctxUnrenderMD').classList.add('active');
+                }
+            } else if (isAlgorithm) {
+                focusedSectionType = 'algorithm';
+                contextName.textContent = 'Algorithm';
+                document.getElementById('ctxFormatAlgo').classList.add('active');
+                specificSizeGroup.style.display = 'flex';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+            } else if (isTable) {
+                focusedSectionType = 'io-table';
+                contextName.textContent = 'Table';
+                document.getElementById('ctxAddRow').classList.add('active');
+                document.getElementById('ctxDeleteRow').classList.add('active');
+                document.getElementById('ctxAddCol').classList.add('active');
+                document.getElementById('ctxDeleteCol').classList.add('active');
+                specificSizeGroup.style.display = 'none';
+                ioSizeGroup.style.display = 'flex';
+                ioFontGroup.style.display = 'flex';
+            } else if (isProblem) {
+                focusedSectionType = 'problem-statement';
+                contextName.textContent = 'Problem';
+                document.getElementById('ctxRenderMD').classList.add('active');
+                if (isRendered) {
+                    document.getElementById('ctxUnrenderMD').classList.add('active');
+                }
+                specificSizeGroup.style.display = 'flex';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+            } else if (isDiscussion) {
+                focusedSectionType = 'discussion';
+                contextName.textContent = 'Discussion';
+                document.getElementById('ctxRenderMD').classList.add('active');
+                if (isRendered) {
+                    document.getElementById('ctxUnrenderMD').classList.add('active');
+                }
+                specificSizeGroup.style.display = 'flex';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+            } else if (isTextElement) {
+                focusedSectionType = 'text';
+                contextName.textContent = 'Text';
+                document.getElementById('ctxRenderMD').classList.add('active');
+                if (isRendered) {
+                    document.getElementById('ctxUnrenderMD').classList.add('active');
+                }
+                specificSizeGroup.style.display = 'flex';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+            } else {
+                focusedSectionType = null;
+                specificSizeGroup.style.display = 'none';
+                ioSizeGroup.style.display = 'none';
+                ioFontGroup.style.display = 'none';
+            }
+            
+            document.getElementById('ctxAlignLeft').classList.add('active');
+            document.getElementById('ctxAlignCenter').classList.add('active');
+            document.getElementById('ctxAlignRight').classList.add('active');
+            document.getElementById('ctxAlignJustify').classList.add('active');
+        }
+
+        // ================================================================
+        // SECTION 22: FOCUS TRACKING
+        // ================================================================
+        function getFocusedElement() {
+            const active = document.activeElement;
+            if (active && (active.matches('[contenteditable="true"]') || active.matches('[data-field]'))) {
+                return active;
+            }
+            
+            if (lastFocusedElement && document.contains(lastFocusedElement)) {
+                return lastFocusedElement;
+            }
+            
+            const editable = document.querySelector('[contenteditable="true"]');
+            if (editable) {
+                editable.focus();
+                lastFocusedElement = editable;
+                return editable;
+            }
+            
+            return null;
+        }
+
+        // ================================================================
+        // SECTION 23: CONTEXT BUTTON FUNCTIONS
+        // ================================================================
+        function formatFocusedC() {
+            const el = getFocusedElement();
+            if (!el || !el.classList.contains('code-content')) {
+                alert('Please click inside the code editor first.');
+                return;
+            }
+            
+            const code = el.textContent;
+            const formatted = formatCCode(code);
+            el.textContent = formatted;
+            updateLineNumbersFor(el);
+            saveState();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = '✅ Code formatted!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        function formatAlgorithm() {
+            const el = getFocusedElement();
+            if (!el || !el.classList.contains('algorithm')) {
+                alert('Please click inside the algorithm section first.');
+                return;
+            }
+            
+            const text = el.textContent;
+            const formatted = formatAlgorithm(text);
+            el.textContent = formatted;
+            saveState();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = '✅ Algorithm formatted!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        function renderFocusedMarkdown() {
+            const el = getFocusedElement();
+            if (!el) {
+                alert('Please click inside a text section first.');
+                return;
+            }
+            
+            const text = el.textContent;
+            const rendered = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+            
+            el.innerHTML = rendered;
+            el.classList.add('rendered-markdown');
+            el.setAttribute('data-markdown-rendered', 'true');
+            saveState();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = '✨ Markdown rendered!';
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        function unrenderFocusedMarkdown() {
+            const el = getFocusedElement();
+            if (!el) {
+                alert('Please click inside a rendered text section first.');
+                return;
+            }
+            
+            if (!el.classList.contains('rendered-markdown')) {
+                alert('This section is not rendered markdown.');
+                return;
+            }
+            
+            const originalText = el.getAttribute('data-markdown-original');
+            if (originalText) {
+                el.textContent = originalText;
+                el.classList.remove('rendered-markdown');
+                el.removeAttribute('data-markdown-rendered');
+                el.removeAttribute('data-markdown-original');
+                saveState();
+                
+                const status = document.getElementById('editStatus');
+                status.textContent = '↩️ Markdown unrendered!';
+                setTimeout(() => {
+                    status.textContent = editMode ? 'Edit ON' : 'View';
+                }, 1500);
+            } else {
+                alert('No original markdown text found.');
+            }
+        }
+
+        function alignText(alignment) {
+            const el = getFocusedElement();
+            if (!el) {
+                alert('Please click inside a text section first.');
+                return;
+            }
+            
+            el.classList.remove('text-left', 'text-center', 'text-right', 'text-justify');
+            el.classList.add('text-' + alignment);
+            saveState();
+            
+            const status = document.getElementById('editStatus');
+            status.textContent = '📐 Aligned ' + alignment;
+            setTimeout(() => {
+                status.textContent = editMode ? 'Edit ON' : 'View';
+            }, 1500);
+        }
+
+        // ================================================================
+        // SECTION 24: TOOLBAR ZOOM
+        // ================================================================
+        function zoomToolbar(delta) {
+            toolbarZoom = Math.max(0.5, Math.min(2.0, toolbarZoom + delta));
+            document.getElementById('toolbar').style.transform = 'scale(' + toolbarZoom + ')';
+            document.getElementById('toolbar').style.transformOrigin = 'top right';
+            document.getElementById('zoomLevel').textContent = Math.round(toolbarZoom * 100) + '%';
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 25: TOGGLE EDIT MODE
+        // ================================================================
+        function toggleEdit() {
+            editMode = !editMode;
+            const btn = document.getElementById('btnEdit');
+            const status = document.getElementById('editStatus');
+            
+            if (editMode) {
+                btn.textContent = 'Disable Edit';
+                btn.style.background = '#ef6c00';
+                status.textContent = '✏️ Edit ON';
+                status.style.color = '#81c784';
+                document.getElementById('pageContent').classList.add('edit-mode');
+                
+                document.querySelectorAll('[data-field], .code-content, .io-table td, .io-table th').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+            } else {
+                btn.textContent = 'Enable Edit';
+                btn.style.background = '#2e7d32';
+                status.textContent = '👁️ View';
+                status.style.color = '#bbb';
+                document.getElementById('pageContent').classList.remove('edit-mode');
+                
+                document.querySelectorAll('[data-field], .code-content, .io-table td, .io-table th').forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
+                });
+            }
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 26: TOGGLE FUNCTIONS
+        // ================================================================
         function togglePreserveFormat() {
             const on = document.getElementById('preserveFormat').checked;
-            if (on) {
-                pageContent.classList.add('preserve-format');
-            } else {
-                pageContent.classList.remove('preserve-format');
-            }
+            document.getElementById('pageContent').classList.toggle('preserve-format', on);
+            saveAppData();
         }
 
-        // ========== WORD WRAP ==========
         function toggleCodeWrap() {
             const on = document.getElementById('wrapCode').checked;
-            if (on) {
-                pageContent.classList.add('wrap-code');
-            } else {
-                pageContent.classList.remove('wrap-code');
-            }
+            document.getElementById('pageContent').classList.toggle('wrap-code', on);
+            saveAppData();
         }
 
         function toggleBodyWrap() {
             const on = document.getElementById('wrapBody').checked;
-            if (on) {
-                pageContent.classList.add('wrap-body');
-            } else {
-                pageContent.classList.remove('wrap-body');
+            document.getElementById('pageContent').classList.toggle('wrap-body', on);
+            saveAppData();
+        }
+
+        // ================================================================
+        // SECTION 27: RESET CONTENT
+        // ================================================================
+        function resetContent() {
+            if (confirm('Reset to default content? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderAssignment(DEFAULT_MARKDOWN);
+                currentMarkdown = DEFAULT_MARKDOWN;
+                const status = document.getElementById('editStatus');
+                status.textContent = '🔄 Reset!';
+                setTimeout(() => {
+                    status.textContent = editMode ? 'Edit ON' : 'View';
+                }, 2000);
             }
         }
 
-        // Prevent browser from inserting <div>/<p> on Enter inside contenteditable
-        document.addEventListener('keydown', function(e) {
-            if (!editMode) return;
-            if (e.key === 'Enter' && !e.shiftKey) {
-                const el = document.activeElement;
-                if (el && el.isContentEditable && (
-                    el.classList.contains('code-content') ||
-                    el.classList.contains('algorithm') ||
-                    el.classList.contains('io-input')
-                )) {
-                    e.preventDefault();
-                    document.execCommand('insertLineBreak'); // inserts <br>
-                }
-            }
-        });
+        // ================================================================
+        // SECTION 28: APPLY ALL STYLES
+        // ================================================================
+        function applyAllStyles() {
+            const headingFont = document.getElementById('headingFont')?.value || "'Montserrat', sans-serif";
+            const bodyFont = document.getElementById('bodyFont')?.value || "'Merriweather', serif";
+            const codeFont = document.getElementById('codeFont')?.value || "'Google Sans Code', monospace";
+            
+            changeHeadingFont(headingFont);
+            changeBodyFont(bodyFont);
+            changeCodeFont(codeFont);
+            
+            const overallSize = document.getElementById('overallSize')?.value || "11";
+            const headSize = document.getElementById('headSize')?.value || "15.5";
+            const bodySize = document.getElementById('bodySize')?.value || "11";
+            const codeSize = document.getElementById('codeSize')?.value || "11";
+            
+            changeOverallSize(overallSize);
+            changeHeadSize(headSize);
+            changeBodySize(bodySize);
+            changeCodeSize(codeSize);
+            
+            updatePageMargins();
+            setTimeout(function() {
+                initGaps();
+                applyIOStylesDirect();
+                updatePrintGaps();
+            }, 100);
+        }
 
-        // ========== DRAGGABLE ==========
+        // ================================================================
+        // SECTION 29: SAVE SETTINGS
+        // ================================================================
+        function saveSettings() {
+            saveAppData();
+            updatePrintGaps();
+            alert('✅ Settings saved!');
+        }
+
+        // ================================================================
+        // SECTION 30: DRAG HANDLE
+        // ================================================================
         let isDragging = false, startX, startY, initialLeft, initialTop;
+        const toolbar = document.getElementById('toolbar');
+        const dragHandle = document.getElementById('dragHandle');
 
         dragHandle.addEventListener('mousedown', (e) => {
             e.preventDefault();
@@ -710,11 +2981,10 @@ Enter Third Number: 30.25</td>
             if (isDragging) {
                 isDragging = false;
                 toolbar.classList.remove('dragging');
-                saveSettings(); // save position
+                saveAppData();
             }
         });
 
-        // Touch
         dragHandle.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
             isDragging = true;
@@ -743,593 +3013,113 @@ Enter Third Number: 30.25</td>
             if (isDragging) {
                 isDragging = false;
                 toolbar.classList.remove('dragging');
+                saveAppData();
+            }
+        });
+
+        // ================================================================
+        // SECTION 31: KEYBOARD SHORTCUTS
+        // ================================================================
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                toggleEdit();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    redoAction();
+                } else {
+                    undoAction();
+                }
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
                 saveSettings();
             }
         });
 
-        // ========== LINE NUMBERS ==========
-        function updateLineNumbers() {
-            const text = codeContent.innerText || codeContent.textContent || '';
-            let lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-            if (lines.length > 1 && lines[lines.length - 1] === '') lines.pop();
-            const count = Math.max(lines.length, 1);
-            let html = '';
-            for (let i = 1; i <= count; i++) html += '<span>' + i + '</span>';
-            lineNumbers.innerHTML = html;
-        }
-
-        // ========== FONT SIZE / FAMILY ==========
-        function changeBodySize(pt) {
-            const size = pt + 'pt';
-            document.body.style.fontSize = size;
-            document.querySelectorAll('.problem-statement, .section-title, .algorithm, .discussion, .io-table').forEach(el => el.style.fontSize = size);
-            document.querySelector('.header').style.fontSize = (parseFloat(pt) + 4.5) + 'pt';
-            document.querySelectorAll('.algorithm, .discussion').forEach(el => el.style.fontSize = (parseFloat(pt) - 0.5) + 'pt');
-            document.querySelectorAll('.io-table th, .io-table td').forEach(el => el.style.fontSize = (parseFloat(pt) - 0.5) + 'pt');
-        }
-
-        function changeCodeSize(pt) {
-            const size = pt + 'pt';
-            document.querySelectorAll('.code-content, .line-numbers').forEach(el => {
-                el.style.fontSize = size;
-                el.style.lineHeight = '1.35';
-            });
-            document.querySelectorAll('.line-numbers span').forEach(span => {
-                span.style.height = '1.35em';
-                span.style.lineHeight = '1.35em';
-            });
-            updateLineNumbers();
-        }
-
-        function changeHeadingFont(font) {
-            document.querySelectorAll('.header, .section-title, .io-table th').forEach(el => el.style.fontFamily = font);
-        }
-        function changeBodyFont(font) {
-            document.querySelectorAll('.problem-statement, .algorithm, .discussion').forEach(el => el.style.fontFamily = font);
-        }
-        function changeOutputFont(font) {
-            document.querySelectorAll('.io-table td').forEach(el => el.style.fontFamily = font);
-        }
-
-        // ========== EDIT MODE ==========
-        function toggleEdit() {
-            if (!editMode) restoreAllMarkdownSources();
-
-            editMode = !editMode;
-            const btn = document.getElementById('btnEdit');
-            const status = document.getElementById('editStatus');
-
-            if (editMode) {
-                btn.textContent = 'Disable Edit';
-                btn.style.background = '#ef6c00';
-                status.textContent = 'Edit Mode ON';
-                status.style.color = '#81c784';
-                pageContent.classList.add('edit-mode');
-                editableFields.forEach(el => el.contentEditable = 'true');
-                codeContent.contentEditable = 'true';
-            } else {
-                btn.textContent = 'Enable Edit';
-                btn.style.background = '#2e7d32';
-                status.textContent = 'View Mode';
-                status.style.color = '#bbb';
-                pageContent.classList.remove('edit-mode');
-                editableFields.forEach(el => el.contentEditable = 'false');
-                codeContent.contentEditable = 'false';
-            }
-        }
-
-        codeContent.addEventListener('input', updateLineNumbers);
-        codeContent.addEventListener('paste', () => setTimeout(updateLineNumbers, 20));
-        codeContent.addEventListener('keyup', updateLineNumbers);
-
-        function addNewSection() {
-            if (!confirm('Append a new blank assignment section?')) return;
-            const sep = document.createElement('div');
-            sep.innerHTML = `
-                <hr style="border:none;border-top:2px dashed #999;margin:22px 0 14px 0;">
-                <div class="header" contenteditable="${editMode}" data-field="title">ASSIGNMENT 2</div>
-                <hr class="divider">
-                <div class="section-title" contenteditable="${editMode}" data-field="heading-problem">PROBLEM STATEMENT</div>
-                <div class="problem-statement" contenteditable="${editMode}" data-field="problem">Write your problem statement here...</div>
-                <div class="section-title" contenteditable="${editMode}" data-field="heading-algorithm">ALGORITHM</div>
-                <div class="algorithm" contenteditable="${editMode}" data-field="algorithm">Algorithm: your_algorithm_name
-Input: 
-Output: 
-Step 1 [Read]: 
-Step 2 [Assign]: 
-Step 3 [Output]: 
-Step 4: Exit</div>
-                <div class="section-title" contenteditable="${editMode}" data-field="heading-source">SOURCE</div>
-                <div class="code-container">
-                    <div class="code-header"><span>C Source Code</span><span style="font-size:8px;color:#888;">Format C: toolbar / Ctrl+Shift+F</span></div>
-                    <div class="code-block">
-                        <div class="line-numbers"><span>1</span></div>
-                        <div class="code-content" contenteditable="${editMode}" data-field="source" spellcheck="false">// Write your code here</div>
-                    </div>
-                </div>
-                <div class="section-title" contenteditable="${editMode}" data-field="heading-io">INPUT / OUTPUT</div>
-                <table class="io-table">
-                    <thead><tr>
-                        <th contenteditable="${editMode}" data-field="heading-input">Input</th>
-                        <th contenteditable="${editMode}" data-field="heading-output">Output</th>
-                    </tr></thead>
-                    <tbody>
-                        <tr>
-                            <td class="io-input" contenteditable="${editMode}" data-field="input">Enter values...</td>
-                            <td contenteditable="${editMode}" data-field="output">Result...</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="section-title" contenteditable="${editMode}" data-field="heading-discussion">DISCUSSION</div>
-                <div class="discussion" contenteditable="${editMode}" data-field="discussion"><p>Write discussion here.</p></div>
-            `;
-            pageContent.appendChild(sep);
-            const newCode = sep.querySelector('.code-content');
-            const newNumbers = sep.querySelector('.line-numbers');
-            if (newCode) {
-                newCode.addEventListener('input', () => updateLineNumbersFor(newCode));
-                newCode.addEventListener('paste', () => setTimeout(() => updateLineNumbersFor(newCode), 20));
-                if (newNumbers && !newNumbers.innerHTML.trim()) updateLineNumbersFor(newCode);
-            }
-            alert('New section added.');
-        }
-
-        // ========== C FORMATTER + MARKDOWN RENDERER ==========
-        // The C formatter is intentionally dependency-free so this HTML file works offline.
-        function normalizeCodeText(el) {
-            return (el.innerText || el.textContent || '')
-                .replace(/\u00a0/g, ' ')
-                .replace(/\r\n/g, '\n')
-                .replace(/\r/g, '\n');
-        }
-
-        function formatCCode(source) {
-            source = source.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
-            if (!source) return '';
-
-            // Protect strings/chars/comments while formatting structural punctuation.
-            const tokens = [];
-            let protectedSource = '';
-            let i = 0;
-
-            while (i < source.length) {
-                const c = source[i];
-                const n = source[i + 1];
-
-                if (c === '"' || c === "'") {
-                    const quote = c;
-                    let j = i + 1;
-                    while (j < source.length) {
-                        if (source[j] === '\\\\') j += 2;
-                        else if (source[j] === quote) { j++; break; }
-                        else j++;
-                    }
-                    const value = source.slice(i, j);
-                    tokens.push(value);
-                    protectedSource += `@@C${tokens.length - 1}@@`;
-                    i = j;
-                    continue;
-                }
-
-                if (c === '/' && n === '/') {
-                    const j = source.indexOf('\n', i);
-                    const end = j === -1 ? source.length : j;
-                    tokens.push(source.slice(i, end).trim());
-                    protectedSource += `@@C${tokens.length - 1}@@`;
-                    i = end;
-                    continue;
-                }
-
-                if (c === '/' && n === '*') {
-                    const j = source.indexOf('*/', i + 2);
-                    const end = j === -1 ? source.length : j + 2;
-                    tokens.push(source.slice(i, end));
-                    protectedSource += `@@C${tokens.length - 1}@@`;
-                    i = end;
-                    continue;
-                }
-
-                protectedSource += c;
-                i++;
-            }
-
-            protectedSource = protectedSource
-                .replace(/[ \t]+/g, ' ')
-                .replace(/[ \t]*\n[ \t]*/g, '\n')
-                .replace(/\s*([;,])\s*/g, '$1 ')
-                .replace(/\s*=\s*/g, ' = ')
-                .replace(/\s*([+\-*/%])\s*/g, ' $1 ')
-                .replace(/\s*([<>]=?|==|!=)\s*/g, ' $1 ')
-                .replace(/\s*&&\s*/g, ' && ')
-                .replace(/\s*\|\|\s*/g, ' || ')
-                .replace(/\b(if|for|while|switch|catch)\s*\(/g, '$1 (')
-                .replace(/\belse\s+if\s*\(/g, 'else if (')
-                .replace(/\)\s*\{/g, ') {')
-                .replace(/\s+\{/g, ' {')
-                .replace(/[ \t]+$/gm, '');
-
-            // Split braces into structural lines.
-            protectedSource = protectedSource
-                .replace(/\{/g, '{\n')
-                .replace(/\}/g, '\n}\n')
-                .replace(/;\s*/g, ';\n');
-
-            const rawLines = protectedSource
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length);
-
-            const output = [];
-            let indent = 0;
-
-            for (let line of rawLines) {
-                if (line.startsWith('}')) indent = Math.max(0, indent - 1);
-
-                // Avoid adding spaces before commas/semicolons after protection.
-                line = line
-                    .replace(/\s+,/g, ',')
-                    .replace(/\s+;/g, ';')
-                    .replace(/\(\s+/g, '(')
-                    .replace(/\s+\)/g, ')')
-                    .replace(/\[\s+/g, '[')
-                    .replace(/\s+\]/g, ']')
-                    .replace(/\s{2,}/g, ' ')
-                    .trim();
-
-                if (line === 'else' || line.startsWith('else ')) {
-                    // Keep "} else {" visually together.
-                    if (output.length && output[output.length - 1].trim() === '}') {
-                        output[output.length - 1] += ' ' + line;
-                        if (line.endsWith('{')) indent++;
-                        continue;
-                    }
-                }
-
-                output.push('    '.repeat(indent) + line);
-
-                if (line.endsWith('{')) indent++;
-            }
-
-            let result = output.join('\n');
-
-            // Restore protected strings/comments.
-            result = result.replace(/@@C(\d+)@@/g, (_, index) => tokens[Number(index)]);
-
-            // Clean common artifacts from operator formatting.
-            result = result
-                .replace(/\s+([;,])(?=\s)/g, '$1')
-                .replace(/\breturn\s+0\s*;/g, 'return 0;')
-                .replace(/#\s*include\s*</g, '#include <')
-                .replace(/#\s*define\s+/g, '#define ');
-
-            return result.trim();
-        }
-
-        function escapeHTML(value) {
-            return String(value)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function inlineMarkdown(text) {
-            let s = escapeHTML(text);
-
-            // Images and links first so their generated HTML is not modified by emphasis rules.
-            s = s.replace(/!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,
-                '<img src="$2" alt="$1">');
-            s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-                '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-            s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-            s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-            s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
-            s = s.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
-            s = s.replace(/(?<!_)_([^_]+)_(?!_)/g, '<em>$1</em>');
-            s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-            return s;
-        }
-
-        function markdownToHTML(markdown) {
-            const text = String(markdown || '')
-                .replace(/\r\n/g, '\n')
-                .replace(/\r/g, '\n');
-
-            const lines = text.split('\n');
-            const out = [];
-            let i = 0;
-
-            while (i < lines.length) {
-                const line = lines[i];
-
-                if (!line.trim()) {
-                    i++;
-                    continue;
-                }
-
-                // Fenced code block.
-                const fence = line.match(/^```([A-Za-z0-9_+-]*)\s*$/);
-                if (fence) {
-                    const language = fence[1] || '';
-                    const code = [];
-                    i++;
-                    while (i < lines.length && !/^```\s*$/.test(lines[i])) {
-                        code.push(lines[i]);
-                        i++;
-                    }
-                    if (i < lines.length) i++;
-                    const cls = language ? ` class="language-${escapeHTML(language)}"` : '';
-                    out.push(`<pre><code${cls}>${escapeHTML(code.join('\n'))}</code></pre>`);
-                    continue;
-                }
-
-                // Headings.
-                const heading = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
-                if (heading) {
-                    const level = heading[1].length;
-                    out.push(`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`);
-                    i++;
-                    continue;
-                }
-
-                // Blockquote.
-                if (/^\s*>\s?/.test(line)) {
-                    const quote = [];
-                    while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
-                        quote.push(lines[i].replace(/^\s*>\s?/, ''));
-                        i++;
-                    }
-                    out.push(`<blockquote>${inlineMarkdown(quote.join('\n')).replace(/\n/g, '<br>')}</blockquote>`);
-                    continue;
-                }
-
-                // Unordered list.
-                if (/^\s*[-*+]\s+/.test(line)) {
-                    const items = [];
-                    while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
-                        items.push(lines[i].replace(/^\s*[-*+]\s+/, ''));
-                        i++;
-                    }
-                    out.push('<ul>' + items.map(item => `<li>${inlineMarkdown(item)}</li>`).join('') + '</ul>');
-                    continue;
-                }
-
-                // Ordered list.
-                if (/^\s*\d+[.)]\s+/.test(line)) {
-                    const items = [];
-                    while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
-                        items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ''));
-                        i++;
-                    }
-                    out.push('<ol>' + items.map(item => `<li>${inlineMarkdown(item)}</li>`).join('') + '</ol>');
-                    continue;
-                }
-
-                // Horizontal rule.
-                if (/^\s*(\*\s*){3,}$|^\s*(-\s*){3,}$|^\s*(_\s*){3,}$/.test(line)) {
-                    out.push('<hr>');
-                    i++;
-                    continue;
-                }
-
-                // Simple Markdown table.
-                if (line.includes('|') && i + 1 < lines.length &&
-                    /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(lines[i + 1])) {
-                    const parseRow = row => row.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(x => x.trim());
-                    const headers = parseRow(line);
-                    i += 2;
-                    const rows = [];
-                    while (i < lines.length && lines[i].includes('|') && lines[i].trim()) {
-                        rows.push(parseRow(lines[i]));
-                        i++;
-                    }
-                    out.push('<table><thead><tr>' +
-                        headers.map(h => `<th>${inlineMarkdown(h)}</th>`).join('') +
-                        '</tr></thead><tbody>' +
-                        rows.map(row => '<tr>' + headers.map((_, idx) => `<td>${inlineMarkdown(row[idx] || '')}</td>`).join('') + '</tr>').join('') +
-                        '</tbody></table>');
-                    continue;
-                }
-
-                // Paragraph. Consecutive non-special lines are one paragraph.
-                const paragraph = [line.trim()];
-                i++;
-                while (i < lines.length && lines[i].trim() &&
-                    !/^(#{1,6})\s+/.test(lines[i]) &&
-                    !/^```/.test(lines[i]) &&
-                    !/^\s*>\s?/.test(lines[i]) &&
-                    !/^\s*[-*+]\s+/.test(lines[i]) &&
-                    !/^\s*\d+[.)]\s+/.test(lines[i])) {
-                    paragraph.push(lines[i].trim());
-                    i++;
-                }
-                out.push(`<p>${inlineMarkdown(paragraph.join('\n')).replace(/\n/g, '<br>')}</p>`);
-            }
-
-            return out.join('\n');
-        }
-
-        function isMarkdownCapableField(el) {
-            return !!el && el.isContentEditable && !el.classList.contains('code-content') &&
-                !el.classList.contains('line-numbers');
-        }
-
-        function getEditorText(el) {
-            // When a field contains rendered Markdown, convert its visible text back to source
-            // before re-rendering so the button remains predictable.
-            return el.innerText || el.textContent || '';
-        }
-
-        function renderMarkdownElement(el) {
-            if (!isMarkdownCapableField(el)) return false;
-
-            // Always preserve the actual Markdown source separately.
-            // Never reconstruct Markdown from rendered HTML/textContent.
-            const source = el.dataset.markdownSource !== undefined
-                ? el.dataset.markdownSource
-                : getEditorText(el);
-
-            el.dataset.markdownSource = source;
-            el.dataset.markdownRendered = 'true';
-            el.innerHTML = markdownToHTML(source);
-            el.classList.add('markdown-html', 'md-rendered');
-            el.setAttribute('contenteditable', 'false');
-            return true;
-        }
-
-        function restoreMarkdownSource(el) {
-            if (!el || el.dataset.markdownSource === undefined) return false;
-
-            el.innerText = el.dataset.markdownSource;
-            el.classList.remove('markdown-html', 'md-rendered');
-            el.dataset.markdownRendered = 'false';
-            el.setAttribute('contenteditable', 'true');
-            return true;
-        }
-
-        function restoreAllMarkdownSources() {
-            document.querySelectorAll('[data-markdown-source]').forEach(restoreMarkdownSource);
-        }
-
-        function renderFocusedMarkdown() {
-            const el = document.activeElement;
-            if (!isMarkdownCapableField(el)) {
-                alert('Enable Edit, click an input/text area (not the C source editor), then click “MD → HTML”.');
-                return;
-            }
-
-            // If the field is already a rendered preview, keep its original
-            // Markdown source and simply refresh the preview.
-            renderMarkdownElement(el);
-            el.blur();
-        }
-
-        function renderAllMarkdown() {
-            if (!editMode) {
-                alert('Enable Edit Mode first.');
-                return;
-            }
-            document.querySelectorAll('[data-field]').forEach(el => {
-                if (isMarkdownCapableField(el)) renderMarkdownElement(el);
-            });
-            document.activeElement?.blur();
-        }
-
-        let lastFocusedEditor = null;
-
-        function rememberEditorFocus(el) {
-            if (el && el.matches('[contenteditable=\"true\"]')) {
-                lastFocusedEditor = el;
-            }
-        }
-
-        function formatFocusedC() {
-            const active = document.activeElement;
-            const el = active && active.classList.contains('code-content') ? active : lastFocusedEditor;
-            if (!editMode) {
-                alert('Please enable Edit Mode first.');
-                return;
-            }
-            if (!el || !el.classList.contains('code-content')) {
-                alert('Click inside the C source code editor, then click Format C.');
-                return;
-            }
-            const formatted = formatCCode(normalizeCodeText(el));
-            el.textContent = formatted;
-            updateLineNumbersFor(el);
-            el.focus();
-            lastFocusedEditor = el;
-        }
-
-        function updateLineNumbersFor(codeEl) {
-            const numbersEl = codeEl.closest('.code-block')?.querySelector('.line-numbers');
-            if (!numbersEl) return;
-            const text = normalizeCodeText(codeEl);
-            const lines = text.split('\n');
-            const count = Math.max(lines.length, 1);
-            numbersEl.innerHTML = Array.from({length: count}, (_, idx) => `<span>${idx + 1}</span>`).join('');
-        }
-
-
-        document.addEventListener('input', e => {
-            const el = e.target;
-            if (!el || !el.matches('[data-field][contenteditable="true"]')) return;
-            if (el.dataset.markdownRendered === 'true') {
-                el.dataset.markdownSource = el.innerText || '';
-                el.dataset.markdownRendered = 'false';
-                el.classList.remove('markdown-html', 'md-rendered');
-            }
-        });
-
-        // Auto-highlight the focused editor so formatting commands always have a clear target.
-        document.addEventListener('focusin', e => {
-            if (e.target && e.target.matches('[contenteditable="true"]')) {
-                document.querySelectorAll('.editor-active').forEach(x => x.classList.remove('editor-active'));
+        // ================================================================
+        // SECTION 32: EVENT LISTENERS
+        // ================================================================
+        document.addEventListener('focusin', function(e) {
+            if (e.target && (e.target.matches('[contenteditable="true"]') || e.target.matches('[data-field]'))) {
+                document.querySelectorAll('.editor-active').forEach(el => {
+                    el.classList.remove('editor-active');
+                });
                 e.target.classList.add('editor-active');
-                rememberEditorFocus(e.target);
+                lastFocusedElement = e.target;
+                updateContext(e.target);
             }
         });
 
-        // The blue highlight is only an editing cue. Remove it when the editor
-        // loses focus, but keep lastFocusedEditor so toolbar buttons still work.
-        document.addEventListener('focusout', e => {
-            if (e.target && e.target.matches('[contenteditable="true"]')) {
-                e.target.classList.remove('editor-active');
+        document.addEventListener('mousedown', function(e) {
+            const target = e.target;
+            const isEditable = target.matches('[contenteditable="true"]') || 
+                              target.matches('[data-field]') ||
+                              target.closest('[contenteditable="true"]') ||
+                              target.closest('[data-field]');
+            
+            const isToolbar = target.closest('.toolbar');
+            
+            if (!isEditable && !isToolbar) {
+                updateContext(null);
+                document.querySelectorAll('.editor-active').forEach(el => {
+                    el.classList.remove('editor-active');
+                });
+                lastFocusedElement = null;
             }
         });
 
-        // Extra protection for browsers that take a screenshot of the current
-        // page state before applying @media print.
-        window.addEventListener('beforeprint', () => {
-            document.querySelectorAll('.editor-active').forEach(el => {
-                el.classList.remove('editor-active');
-            });
-        });
-
-        document.addEventListener('mousedown', e => {
-            const editor = e.target.closest?.('[contenteditable="true"]');
-            if (editor) lastFocusedEditor = editor;
-        });
-
-        // Toolbar buttons take focus away from contenteditable. Remember the editor
-        // before the click so Format C still operates on the intended source block.
-        document.querySelectorAll('#toolbar button').forEach(button => {
-            button.addEventListener('mousedown', e => {
-                if (document.activeElement?.matches('[contenteditable="true"]')) {
-                    lastFocusedEditor = document.activeElement;
-                }
-            });
-        });
-
-        // Format C automatically after pasting into a source editor when Ctrl/Cmd+Shift+F is used.
-        document.addEventListener('keydown', e => {
-            if (!editMode) return;
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'f') {
-                if (document.activeElement?.classList.contains('code-content')) {
-                    e.preventDefault();
-                    formatFocusedC();
-                }
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('code-content')) {
+                updateLineNumbersFor(e.target);
+            }
+            if (e.target && (e.target.matches('[contenteditable="true"]') || e.target.matches('[data-field]'))) {
+                saveAppData();
             }
         });
 
-        function resetContent() {
-            if (confirm('Reset page content to original? Settings will stay saved.')) {
-                location.reload();
+        // ================================================================
+        // SECTION 33: INITIALIZATION
+        // ================================================================
+        function init() {
+            populateFontSelectors();
+            
+            const hasSavedData = loadAppData();
+            
+            if (!hasSavedData) {
+                renderAssignment(DEFAULT_MARKDOWN);
+            } else {
+                setTimeout(function() {
+                    applyAllStyles();
+                    applyIOStylesDirect();
+                    initGaps();
+                    updatePrintGaps();
+                }, 200);
             }
+            
+            console.log('📝 Assignment Editor loaded!');
+            console.log('💡 Features:');
+            console.log('  - 💾 Auto-saves all changes');
+            console.log('  - 📂 Restores last session on reload');
+            console.log('  - 📐 Overall, Head, Body, Code, and Specific sizes');
+            console.log('  - 🖨️ Margins apply to both screen and print');
+            console.log('  - 🔄 Undo/Redo (Ctrl+Z / Ctrl+Shift+Z)');
+            console.log('  - 💾 Save settings (Ctrl+S)');
+            console.log('  - 📄 Import/Export Markdown');
+            console.log('  - 🎯 Context-aware toolbar');
+            console.log('  - 📊 I/O Table has separate Input/Output styling');
+            console.log('  - 🔤 I/O Input/Output separate font controls');
+            console.log('  - 📏 One slider with 3 modes: Section, Head-Text, Paragraph gaps');
+            console.log('  - 🖨️ Gaps work on both screen and print');
         }
 
-        // Init
-        updateLineNumbers();
-        loadSettings();
-
-        document.addEventListener('keydown', e => {
-            if (e.ctrlKey && e.key === 'e') {
-                e.preventDefault();
-                toggleEdit();
-            }
+        window.addEventListener('beforeunload', function() {
+            saveAppData();
         });
+
+        window.onload = init;
     </script>
 </body>
 </html>
