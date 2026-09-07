@@ -1949,7 +1949,7 @@ The program ran successfully, correctly calculating and printing the average of 
                     titleEl.className = 'section-title';
                     titleEl.setAttribute('contenteditable', 'false');
                     titleEl.setAttribute('data-field', 'heading-source_code');
-                    titleEl.textContent = 'SOURCE CODE + TERMINAL';
+                    titleEl.textContent = 'SOURCE CODE';
                     page.appendChild(titleEl);
 
                     const codeMatch = content.match(/```(\w*)\n([\s\S]*?)```/);
@@ -3032,7 +3032,7 @@ More content here.`;
 
             const termHeader = document.createElement('div');
             termHeader.className = 'terminal-header';
-            termHeader.innerHTML = `<span class="term-title">● Terminal</span><span>INPUT / OUTPUT</span>`;
+            termHeader.innerHTML = `<span>INPUT / OUTPUT</span>`;
             termPane.appendChild(termHeader);
 
             const termContent = document.createElement('div');
